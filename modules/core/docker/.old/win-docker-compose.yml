@@ -1,0 +1,32 @@
+name: "winapps"
+
+services:
+  windows:
+    image: ghcr.io/dockur/windows:latest
+    container_name: WinApps
+    environment:
+      VERSION: "11"
+      RAM_SIZE: "4G"
+      CPU_CORES: "4"
+      DISK_SIZE: "64G"
+      # DISK2_SIZE: "32G"
+      USERNAME: "josi"
+      PASSWORD: "josi_pw"
+      HOME: "/home/josi"
+    ports:
+      - 8006:8006
+      - 3389:3389/tcp
+      - 3389:3389/udp
+    cap_add:
+      - NET_ADMIN
+    stop_grace_period: 120s
+    restart: on-failure
+    volumes:
+      - "/home/josi/Games/vm/winapps/data:/storage"
+      # - "/home/josi/Games/vm/winapps/storage2:/storage2"
+      - "/home/josi:/shared"
+      - "./oem:/oem"
+    devices:
+      - /dev/kvm
+      - /dev/net/tun
+
