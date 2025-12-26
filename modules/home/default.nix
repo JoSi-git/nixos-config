@@ -2,6 +2,7 @@
   imports = [
     ./gaming.nix                     # packages related to gaming
     ./nemo.nix                        # file manager
+    ./nixcord.nix                     # Declarative Vencord plugins + options 
 #    ./modrinth.nix                   # minecraft game launcher
     ./scripts/nixy.nix               # scripts menu
     ./packages.nix                  # other packages

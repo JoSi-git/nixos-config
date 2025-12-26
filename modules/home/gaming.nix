@@ -11,9 +11,10 @@
     gamescope
     winetricks
     wineWowPackages.wayland
-#    lutris
+    lutris
     headsetcontrol
-    zulu8
+    
+    prismlauncher
   ];
 }
 

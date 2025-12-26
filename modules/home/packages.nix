@@ -13,7 +13,8 @@
     gemini-cli            # google gemini for terminal
     git                   # version control system
     gtrash                # CLI trash utility (safer rm)
-    imv                   # image viewer
+    imv                   # Command line media image viewer
+    mpv                   # Command line media player 
     jq                    # json tool
     lazygit               # git tool
     man-pages             # additional manual pages
@@ -66,7 +67,8 @@
     ## GUI Applications
     audacity              # audio software
     blender               # 3D creation suite
-    discord               # voice, video, and text chat app
+#    discord               # voice, video, and text chat app
+#    discord-gamesdk       # Library to allow other programs to interact with the Discord
     drawio                # digramm softwarer
     ferdium               # All your services in one place
     github-desktop        # graphical git client for github
@@ -82,7 +84,8 @@
 #   rpi-imager            # raspberry pi imager
     thonny                # python IDE
     vscodium              # IDE
-    wdisplays             # Wayland display configuration GUI    dracula-icon-theme    # dracula theme for icons
     vlc                   # media player
+    
+    filezilla
   ];
 }

@@ -13,7 +13,7 @@
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-
+    
     hyprland.url = "github:hyprwm/Hyprland";
     hypr-contrib = {
       url = "github:hyprwm/contrib";
@@ -36,21 +36,27 @@
       };
     };
     
+    
     quickshell = {
-      url = "git+https://git.outfoxxed.me/outfoxxed/quickshell";
+      url = "git+https://git.outfoxxed.me/quickshell/quickshell";
       inputs.nixpkgs.follows = "nixpkgs";
+    };
+    
+    nixcord = {
+    url = "github:kaylorben/nixcord";
     };
     
     nur.url = "github:nix-community/NUR";
     nix-gaming.url = "github:fufexan/nix-gaming";
     nix-flatpak.url = "github:gmodena/nix-flatpak";
+    
     spicetify-nix = {
       url = "github:Gerg-L/spicetify-nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
   };
 
-  outputs =
+outputs =
     { nixpkgs, self, ... }@inputs:
     let
       username = "josi";
@@ -69,6 +75,11 @@
           inputs.home-manager.nixosModules.home-manager
           inputs.stylix.nixosModules.stylix
           ./hosts/desktop
+          {
+            home-manager.sharedModules = [
+              inputs.nixcord.homeModules.nixcord
+            ];
+          }
           ];
           specialArgs = {
             host = "desktop";
@@ -81,6 +92,11 @@
           inputs.home-manager.nixosModules.home-manager
           inputs.stylix.nixosModules.stylix
           ./hosts/laptop
+          {
+            home-manager.sharedModules = [
+              inputs.nixcord.homeModules.nixcord
+            ];
+          }
           ];
           specialArgs = {
             host = "laptop";
@@ -93,6 +109,11 @@
           inputs.home-manager.nixosModules.home-manager
           inputs.stylix.nixosModules.stylix
           ./hosts/vm
+          {
+            home-manager.sharedModules = [
+              inputs.nixcord.homeModules.nixcord
+            ];
+          }
           ];
           specialArgs = {
             host = "vm";

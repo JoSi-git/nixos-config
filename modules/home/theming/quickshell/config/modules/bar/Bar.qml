@@ -60,10 +60,10 @@ PanelWindow {
             border.color: "#C0C0C0"
             border.width: 1
             
-//            Bar_Content {
-//                anchors.fill: parent 
-//                anchors.margins: 5
-//                }
+            BarContent {
+                anchors.fill: parent 
+                anchors.margins: 5
+                }
         }
     }
 }

@@ -16,7 +16,7 @@
       base01 = "#1c1e1f"; # Lighter Background (Used for status bars, line number and folding marks)
       base02 = "#1c1e1f"; # Selection Background
       base03 = "#c0c0c0"; # Comments, Invisibles, Line Highlighting
-      base04 = "#ff0000"; # Dark Foreground (Used for status bars)
+      base04 = "#f5e0dc"; # Dark Foreground (Used for status bars)
       base05 = "#FFFFFF"; # Default Foreground, Caret, Delimiters, Operators
       base06 = "#f5e0dc"; # Light Foreground (Not often used)
       base07 = "#b4befe"; # Light Background (Not often used)

@@ -3,9 +3,7 @@
 let
   configName = "default";
 
-  shellAssets = builtins.path { 
-    path =./config; 
-  };
+  shellAssets = ./config;
   
 in 
 {
