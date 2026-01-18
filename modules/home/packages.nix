@@ -47,7 +47,7 @@
     yt-dlp-light          # command-line video downloader
 
     ## Fun Tools & Terminal Games
-    cbonsai               # grow a bonsai tree in your terminal
+#    cbonsai               # grow a bonsai tree in your terminal
     cmatrix               # Matrix-style terminal screensaver
     cowsay                # configurable talking cow (and other creatures)
     fortune               # display a random epigram

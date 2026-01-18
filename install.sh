@@ -43,9 +43,10 @@ print_header() {
        |_| \_|_/_/\_\\\___/|___/ |___|_| |_|___/\__\__,_|_|_|\___|_|  
 
 
-               $CYAN https://github.com/JoSi-git/nixos-config $RED
+                https://github.com/JoSi-git/nixos-config $RED
       ! To make sure everything runs correctly DONT run as root ! $GREEN
-                       -> '\"./install.sh\"' $NORMAL
+        Inspired by the Frost-Phoenix NixOS configuration. Big shout-out!  $NORMAL
+             -> https://github.com/Frost-Phoenix/nixos-config  $NORMAL
     "
 }
 
@@ -59,6 +60,7 @@ get_username() {
 
 set_username() {
     sed -i -e "s/${CURRENT_USERNAME}/${username}/g" ./flake.nix
+    sed -i "s|/home/${CURRENT_USERNAME}/|/home/${username}/|g" ./modules/home/rofi/config.rasi
 }
 
 get_host() {
@@ -67,11 +69,14 @@ get_host() {
     echo
 
     if [[ $REPLY =~ ^[Dd]$ ]]; then
-        HOST='desktop'
+        HOST="desktop"
+        HOSTNAME="lc-${username}-01"
     elif [[ $REPLY =~ ^[Ll]$ ]]; then
-        HOST='laptop'
+        HOST="latop"
+        HOSTNAME="ln-${username}-01"
     elif [[ $REPLY =~ ^[Vv]$ ]]; then
-        HOST='vm'
+        HOST="vm"
+        HOSTNAME="srv-${username}-01"
     else
         echo "Invalid choice. Please select 'D' for desktop, 'L' for laptop or 'V' for virtual machine."
         exit 1
@@ -98,13 +103,28 @@ install() {
 
     # Copy the wallpapers
     echo -e "Copying all ${MAGENTA}wallpapers${NORMAL}"
-    cp -r wallpapers/wallpaper.png ~/Pictures/wallpapers
-    cp -r wallpapers/otherWallpaper/gruvbox/* ~/Pictures/wallpapers/others/
-    cp -r wallpapers/otherWallpaper/nixos/* ~/Pictures/wallpapers/others/
+    cp wallpapers/wallpaper.png ~/Pictures/wallpapers/
+    cp -r wallpapers/others/* ~/Pictures/wallpapers/others/
 
-    # Get the hardware configuration
-    echo -e "Copying ${MAGENTA}/etc/nixos/hardware-configuration.nix${NORMAL} to ${MAGENTA}./hosts/${HOST}/${NORMAL}\n"
-    cp /etc/nixos/hardware-configuration.nix hosts/${HOST}/hardware-configuration.nix
+    # User Information
+    echo 
+    echo -e "${MAGENTA}------------------------------------------------------------------${NORMAL}"
+    echo -e "${MAGENTA}POST-INSTALLATION & CONFIGURATION NOTES${NORMAL}"
+    echo -e ""
+    echo -e "${YELLOW}1. Hardware Configuration:${NORMAL}"
+    echo -e "Extended hardware configuration has been automatically deactivated."
+    echo -e "To add extra drives or hardware components, check the file hardware.nix uncomment the line in:"
+    echo -e "-> ${CYAN}./modules/core/default.nix${NORMAL}"
+    echo -e ""
+    echo -e "${YELLOW}2. rEFInd Theme (Manual Step):${NORMAL}"
+    echo -e "If you want to use the custom rEFInd theme, run this command post Install:"
+    echo -e "-> ${CYAN}sudo cp -r /home/${username}/nixos-config/wallpapers/refind/themes /boot/EFI/refind/${NORMAL}"
+    echo -e ""
+    echo -e "${MAGENTA}------------------------------------------------------------------${NORMAL}\n"
+
+    # Deactivate hardware.nix in the core modules
+    sed -i 's|./hardware.nix|# ./hardware.nix|' ./modules/core/default.nix
+
 
     # Last Confirmation
     echo -en "You are about to start the system build, do you want to process ? "
@@ -112,7 +132,7 @@ install() {
 
     # Build the system (flakes + home manager)
     echo -e "\nBuilding the system...\n"
-    sudo nixos-rebuild switch --flake .#${HOST}
+    sudo nixos-rebuild switch --flake .#${HOSTNAME}
 }
 
 main() {

@@ -1,0 +1,121 @@
+configuration {
+    modi:                       "drun,run,filebrowser,window";
+    show-icons:                 true;
+    display-drun:               "APPS";
+    display-run:                "RUN";
+    display-filebrowser:        "FILES";
+    display-window:             "WINDOW";
+    drun-display-format:        "{name}";
+    window-format:              "{w} · {c} · {t}";
+}
+
+@theme "theme"
+
+window {
+    transparency:                "real";
+    location:                    center;
+    anchor:                      center;
+    fullscreen:                  false;
+    width:                       1000px;
+    height:                      530px;
+    x-offset:                    0px;
+    y-offset:                    0px;
+    border-radius:               15px;
+    border:                      2px;
+    border-color:                #E2E4E3;
+    cursor:                      "default";
+    background-color:            @background;
+}
+
+mainbox {
+    spacing:                     0px;
+    background-color:            transparent;
+    orientation:                 horizontal;
+    children:                    [ "imagebox", "listbox" ];
+}
+
+/* Sorry for using an absolute path; for performance reasons this cannot be removed currently. Path is automatically adjusted during install. */
+
+imagebox {
+    padding:                     20px;
+    background-color:            transparent;
+    background-image:            url("/home/josi/nixos-config/modules/home/rofi/klugheim_taron.jpg", height);
+    orientation:                 vertical;
+    children:                    [ "inputbar", "dummy", "mode-switcher" ];
+}
+
+listbox {
+    spacing:                     20px;
+    padding:                     20px;
+    background-color:            transparent;
+    orientation:                 vertical;
+    children:                    [ "message", "listview" ];
+}
+
+dummy {
+    background-color:            transparent;
+}
+
+inputbar {
+    spacing:                     15px;
+    padding:                     15px;
+    border-radius:               10px;
+    background-color:            @background-alt;
+    text-color:                  @foreground;
+    children:                    [ "textbox-prompt-colon", "entry" ];
+}
+
+textbox-prompt-colon {
+    expand:                      false;
+    str:                         " ";
+    background-color:            inherit;
+    text-color:                  inherit;
+}
+
+entry {
+    background-color:            inherit;
+    text-color:                  inherit;
+    cursor:                      text;
+    placeholder:                 "Search";
+    placeholder-color:           inherit;
+}
+
+mode-switcher {
+    spacing:                     20px;
+    background-color:            transparent;
+    text-color:                  @foreground;
+}
+
+button {
+    padding:                     15px;
+    border-radius:               10px;
+    background-color:            @background-alt;
+    text-color:                  inherit;
+    cursor:                      pointer;
+}
+
+button selected {
+    background-color:            @selected;
+    text-color:                  @foreground;
+}
+
+listview {
+    columns:                     1;
+    lines:                       8;
+    cycle:                       true;
+    dynamic:                     true;
+    scrollbar:                   false;
+    layout:                      vertical;
+    reverse:                     false;
+    fixed-height:                true;
+    fixed-columns:               true;
+    spacing:                     10px;
+    background-color:            transparent;
+    text-color:                  @foreground;
+    cursor:                      "default";
+}
+
+message {
+    background-color:            transparent;
+}
+

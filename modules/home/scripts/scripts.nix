@@ -1,55 +1,55 @@
 { pkgs, ... }:
 let
   wall-change = pkgs.writeShellScriptBin "wall-change" (
-    builtins.readFile ./scripts/wall-change.sh
+    builtins.readFile ./wall-change.sh
   );
   wallpaper-picker = pkgs.writeShellScriptBin "wallpaper-picker" (
-    builtins.readFile ./scripts/wallpaper-picker.sh
+    builtins.readFile ./wallpaper-picker.sh
   );
 
   runbg = pkgs.writeShellScriptBin "runbg" (
-    builtins.readFile ./scripts/runbg.sh
+    builtins.readFile ./runbg.sh
   );
 
   toggle_blur = pkgs.writeShellScriptBin "toggle_blur" (
-    builtins.readFile ./scripts/toggle_blur.sh
+    builtins.readFile ./toggle_blur.sh
   );
   toggle_oppacity = pkgs.writeShellScriptBin "toggle_oppacity" (
-    builtins.readFile ./scripts/toggle_oppacity.sh
+    builtins.readFile ./toggle_oppacity.sh
   );
   toggle_float = pkgs.writeShellScriptBin "toggle_float" (
-    builtins.readFile ./scripts/toggle_float.sh
+    builtins.readFile ./toggle_float.sh
   );
 
   maxfetch = pkgs.writeShellScriptBin "maxfetch" (
-    builtins.readFile ./scripts/maxfetch.sh
+    builtins.readFile ./maxfetch.sh
   );
 
   compress = pkgs.writeShellScriptBin "compress" (
-    builtins.readFile ./scripts/compress.sh
+    builtins.readFile ./compress.sh
   );
   extract = pkgs.writeShellScriptBin "extract" (
-    builtins.readFile ./scripts/extract.sh
+    builtins.readFile ./extract.sh
   );
 
   show-keybinds = pkgs.writeShellScriptBin "show-keybinds" (
-    builtins.readFile ./scripts/keybinds.sh
+    builtins.readFile ./keybinds.sh
   );
 
   ascii = pkgs.writeShellScriptBin "ascii" (
-    builtins.readFile ./scripts/ascii.sh
+    builtins.readFile ./ascii.sh
   );
 
   record = pkgs.writeShellScriptBin "record" (
-    builtins.readFile ./scripts/record.sh
+    builtins.readFile ./record.sh
   );
 
   screenshot = pkgs.writeShellScriptBin "screenshot" (
-    builtins.readFile ./scripts/screenshot.sh
+    builtins.readFile ./screenshot.sh
   );
 
   toogle-nitch = pkgs.writeShellScriptBin "toggle-nitch" (
-    builtins.readFile ./scripts/toggle-nitch.sh
+    builtins.readFile ./toggle-nitch.sh
   );
 in
 {
