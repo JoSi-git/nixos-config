@@ -23,10 +23,6 @@ in {
     MOZ_ENABLE_WAYLAND = "1";
   };
   
-  nixpkgs.config = {
-    nvidia.acceptLicense = true;
-  };
-  
   # Nvidia configuration
   hardware = {
     nvidia = {

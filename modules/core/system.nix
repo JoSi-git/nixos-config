@@ -1,5 +1,4 @@
 { self, pkgs, lib, inputs, ... }: {
-  # imports = [ inputs.nix-gaming.nixosModules.default ];
   nix = {
     settings = {
       auto-optimise-store = true;
@@ -16,9 +15,6 @@
         "hyprland.cachix.org-1:a7pgxzMz7+chwVL3/pzj6jIBMioiJM7ypFP8PwtkuGc="
       ];
     };
-  };
-  nixpkgs = {
-    overlays = [ inputs.nur.overlays.default ];
   };
 
   environment.systemPackages = with pkgs; [

@@ -24,7 +24,6 @@
     ncdu                  # disk usage analyzer with an ncurses interface
     nitch                 # minimal system fetch tool
     nixd                  # language server for Nix
-    nixfmt-rfc-style      # formatter for Nix expressions
     nmap                  # network scanner
     openssl               # cryptographic toolkit
     procs                 # modern replacement for ps

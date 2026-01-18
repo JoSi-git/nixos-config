@@ -40,49 +40,57 @@ outputs =
       system = "x86_64-linux";
       pkgs = import nixpkgs {
         inherit system;
-        config.allowUnfree = true;
+        config = {
+          allowUnfree = true;
+          allowUnfreePredicate = pkg: true;
+          nvidia.acceptLicense = true;
+        };
+        overlays = [ inputs.nur.overlays.default ];
       };
       lib = nixpkgs.lib;
     in
     {
       nixosConfigurations = {
         desktop = nixpkgs.lib.nixosSystem {
-          specialArgs = { inherit self inputs username system; host = "desktop"; };
+          specialArgs = { inherit self inputs username; host = "desktop"; };
           modules = [
-          inputs.home-manager.nixosModules.home-manager
-          inputs.stylix.nixosModules.stylix
-          ./hosts/desktop
-          {
-            home-manager.sharedModules = [
-              inputs.nixcord.homeModules.nixcord ];
-          }
-         ];
+            inputs.home-manager.nixosModules.home-manager
+            inputs.stylix.nixosModules.stylix
+            ./hosts/desktop
+            {
+              nixpkgs.hostPlatform = "x86_64-linux";
+              nixpkgs.pkgs = pkgs;
+              home-manager.sharedModules = [ inputs.nixcord.homeModules.nixcord ];
+            }
+          ];
         };
         
         laptop = nixpkgs.lib.nixosSystem {
-          specialArgs = { inherit self inputs username system; host = "laptop"; };
+          specialArgs = { inherit self inputs username; host = "laptop"; };
           modules = [
-          inputs.home-manager.nixosModules.home-manager
-          inputs.stylix.nixosModules.stylix
-          ./hosts/laptop
-          {
-            home-manager.sharedModules = [
-              inputs.nixcord.homeModules.nixcord ];
-          }
-         ];
+            inputs.home-manager.nixosModules.home-manager
+            inputs.stylix.nixosModules.stylix
+            ./hosts/laptop
+            {
+              nixpkgs.hostPlatform = "x86_64-linux";
+              nixpkgs.pkgs = pkgs;
+              home-manager.sharedModules = [ inputs.nixcord.homeModules.nixcord ];
+            }
+          ];
         };
         
         vm = nixpkgs.lib.nixosSystem {
-          specialArgs = { inherit self inputs username system; host = "vm"; };
+          specialArgs = { inherit self inputs username; host = "vm"; };
           modules = [
-          inputs.home-manager.nixosModules.home-manager
-          inputs.stylix.nixosModules.stylix
-          ./hosts/vm
-          {
-            home-manager.sharedModules = [
-              inputs.nixcord.homeModules.nixcord ];
-          }
-         ];
+            inputs.home-manager.nixosModules.home-manager
+            inputs.stylix.nixosModules.stylix
+            ./hosts/vm
+            {
+              nixpkgs.hostPlatform = "x86_64-linux";
+              nixpkgs.pkgs = pkgs;
+              home-manager.sharedModules = [ inputs.nixcord.homeModules.nixcord ];
+            }
+          ];
         };
       };
     };
