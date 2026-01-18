@@ -1,20 +1,17 @@
-{
-  pkgs,
-  config,
-  inputs,
-  ...
-}:
+ { pkgs, config, inputs, ...}:
 {
   home.packages = with pkgs; [
     ## Utils
     gamemode
-    gamescope
     winetricks
     wineWowPackages.wayland
     lutris
+    heroic
     headsetcontrol
-    
     prismlauncher
+    
+    ## Libaries
+    sdl3
   ];
-}
 
+} 

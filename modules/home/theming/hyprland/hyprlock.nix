@@ -3,103 +3,111 @@ let
   text = "rgb(226, 228, 227)";
 in
 {
-  home.packages = [ pkgs.hyprlock ];
+  home.packages = [
+    pkgs.hyprlock
+    pkgs.inter
+  ];
+  
   xdg.configFile."hypr/hyprlock.conf".text = ''
-    # BACKGROUND
-    background {
-      monitor =
-      path = ${../../../../wallpapers/wallpaper.png}
-      blur_passes = 2
-      noise = true
-      contrast = 0.8
-      brightness = 0.8
-      vibrancy = 0.15
+  # BACKGROUND
+  background {
+    monitor =
+    path = ~/Pictures/wallpapers/wallpaper.png
+    blur_passes = 2
+    contrast = 0.8916
+    brightness = 0.8172
+    vibrancy = 0.1696
+    vibrancy_darkness = 0.0
+  }
+  
+  # GENERAL
+  general {
+    no_fade_in = false
+    grace = 0
+    disable_loading_bar = false
+  }
+  
+  # Hour-Time
+  label {
+    monitor = eDP-1
+    text = cmd[update:1000] echo -e "$(date +"%H")"
+    color = rgba(255, 185, 0, .6)
+    font_size = 190
+    font_family = alfaslabone 
+    position = 0, 300
+    halign = center
+    valign = center
+  }
+
+  # Minute-Time
+  label {
+    monitor = eDP-1
+    text = cmd[update:1000] echo -e "$(date +"%M")"
+    color = rgba(255, 255, 255, .6)
+    font_size = 190
+    font_family = alfaslabone
+    position = 0, 75
+    halign = center
+    valign = center
+  }
+
+  # Day-Date-Month
+  label {
+    monitor = eDP-1
+    text = cmd[update:1000] echo "<span color='##ffffff99'>$(date '+%A, ')</span><span color='##ffb90099'>$(date '+%d %B')</span>"
+    font_size = 25
+    font_family = Inter
+    position = 0, -80
+    halign = center
+    valign = center
+  }
+
+  # USER
+  label {
+    monitor = eDP-1
+    text =   $USER
+    color = rgba(216, 222, 233, 0.80)
+    outline_thickness = 2
+    dots_size = 0.2 # Scale of input-field height, 0.2 - 0.8
+    dots_spacing = 0.2 # Scale of dots' absolute size, 0.0 - 1.0
+    dots_center = true
+    font_size = 20
+    font_family = JetBrains Mono Nerd
+    position = 0, -300
+    halign = center
+    valign = center
+  }
+  
+  # INPUT FIELD
+  input-field {
+    monitor = eDP-1
+    size = 250, 45
+    outline_thickness = 1
+    dots_size = 0.1
+    dots_spacing = 0.1
+    dots_center = true
+    dots_text_format = <span> </span>
+    outer_color = rgba(0, 0, 0, 0)
+    inner_color = rgba(255, 255, 255, 0.1)
+    font_color = rgb(200, 200, 200)
+    fade_on_empty = false
+    font_family = JetBrainsMono Nerd Font = <i><span foreground="##ffffff99"> 󰌾 Enter Pass</span></i>
+    hide_input = false
+    position = 0, -360
+    halign = center
+    valign = center
     }
 
-    # GENERAL
-    general {
-      hide_cursor = true
-      no_fade_in = false
-      grace = 0
-      disable_loading_bar = false
-      ignore_empty_input = true
-      fractional_scaling = 0
-    }
-
-    # Time
-    label {
-      monitor = eDP-1
-      text = cmd[update:1000] echo "$(date +"%k:%M")"
-      color = rgba(226, 228, 227, .9)
-      font_size = 115
-      font_family = Maple Mono Bold
-      shadow_passes = 3
-      position = 0, ${if (host == "laptop") then "-25" else "-150"}
-      halign = center
-      valign = top
-    }
-
-    # Day
-    label {
-      monitor = eDP-1
-      text = cmd[update:1000] echo "- $(date +"%A, %B %d") -"
-      color = rgba(226, 228, 227, .9)
-      font_size = 18
-      font_family = Maple Mono
-      shadow_passes = 3
-      position = 0, ${if (host == "laptop") then "-225" else "-350"}
-      halign = center
-      valign = top
-    }
-
-    # USER-BOX
-    shape {
-      monitor = eDP-1
-      size = 300, 50
-      color = rgba(102, 92, 84, .33)
-      rounding = 10
-      border_size = 0
-      border_color = rgba(255, 255, 255, 0)
-      rotate = 0
-
-      position = 0, ${if (host == "laptop") then "120" else "270"}
-      halign = center
-      valign = bottom
-    }
-
-    # USER
-    label {
-      monitor = eDP-1
-      text =   $USER
-      color = rgba(226, 228, 227, 1)
-      font_size = 15
-      font_family = Maple Mono Bold
-      position = 0, ${if (host == "laptop") then "131" else "281"}
-      halign = center
-      valign = bottom
-    }
-    
-    # INPUT FIELD
-    input-field {
-      monitor = eDP-1
-      size = 300, 50
-      outline_thickness = 1
-      rounding = 10
-      dots_size = 0.25 # Scale of input-field height, 0.2 - 0.8
-      dots_spacing = 0.4 # Scale of dots' absolute size, 0.0 - 1.0
-      dots_center = true
-      outer_color = rgba(102, 92, 84, .33)
-      inner_color = rgba(102, 92, 84, .33)
-      color = rgba(226, 228, 227, .9)
-      font_color = rgba(226, 228, 227, .9)
-      font_size = 14
-      font_family = Maple Mono Bold
-      fade_on_empty = false
-      placeholder_text = <i><span foreground="##E2E4E3">Enter Password</span></i>
-      hide_input = false
-      position = 0, ${if (host == "laptop") then "50" else "200"}
-      halign = center
-      valign = bottom
-    }
+  # CURRENT SONG
+  label {
+    monitor = eDP-1
+    text = cmd[update:1000] echo "$(~/nixos-config/modules/home/scripts/scripts/songdetail.sh)" 
+    color = rgba(255, 255, 255, 0.7)
+    font_size = 18
+    font_family = Inter Bold
+    position = 0, 80
+    halign = center
+    valign = bottom
+  }
   '';
 }

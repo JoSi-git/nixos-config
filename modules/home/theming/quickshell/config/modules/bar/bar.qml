@@ -3,7 +3,7 @@ import Quickshell
 import Quickshell.Hyprland
 
 PanelWindow {
-    id: panel
+    id: qsbar
     implicitHeight: 60
     color: "transparent"
     anchors {
@@ -11,6 +11,10 @@ PanelWindow {
         left: true
         right: true
     }
+
+    property color colBg: "#0b1119"
+    property color colBorder: "#C0C0C0"
+    property color colWhite: "#FFFFFF"
         
     Rectangle {
         id: bar_main_content
@@ -55,10 +59,15 @@ PanelWindow {
             anchors.rightMargin: 8
             
             height: 35
-            color: "#0b1119"
+            color: colBg
             radius: 8
-            border.color: "#C0C0C0"
+            border.color: colBorder
             border.width: 1
+
+            Loader {
+                anchors.fill: parent
+                source: "bar_content.qml"
+            }
         }
     }
 }

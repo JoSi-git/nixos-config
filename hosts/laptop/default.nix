@@ -24,8 +24,7 @@
     enable = true;
     polkitPolicyOwners = [ "josi" ];
   };
-
-
+  
   services = {
     power-profiles-daemon.enable = true;
 

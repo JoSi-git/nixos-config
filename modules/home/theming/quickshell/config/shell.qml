@@ -4,8 +4,14 @@ import Quickshell
 
 ShellRoot {
     id: root
-    Loader {
-        active: true
-        source: "./modules/bar/Bar.qml"
+
+    Instantiator {
+        model: Quickshell.screens
+        
+        delegate: Loader {
+            active: true
+            source: "./modules/bar/bar.qml"
+            onLoaded: item.screen = modelData
+        }
     }
 }

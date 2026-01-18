@@ -10,6 +10,11 @@
     noto-fonts-color-emoji
     papirus-icon-theme
     nordzy-cursor-theme
+    
+    (runCommand "alfa-slab-one" {} ''
+      mkdir -p $out/share/fonts/truetype
+      cp ${./fonts}/AlfaSlabOne-Regular.ttf $out/share/fonts/truetype/
+    '')
   ];
 
   gtk = {

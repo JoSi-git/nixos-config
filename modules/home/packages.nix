@@ -14,6 +14,7 @@
     git                   # version control system
     gtrash                # CLI trash utility (safer rm)
     imv                   # Command line media image viewer
+    iwgtk                 # Lightweight, graphical wifi management utility for Linux
     mpv                   # Command line media player 
     jq                    # json tool
     lazygit               # git tool
@@ -51,7 +52,7 @@
     cmatrix               # Matrix-style terminal screensaver
     cowsay                # configurable talking cow (and other creatures)
     fortune               # display a random epigram
-    moon-buggy            # drive a buggy across the moon's surface
+    # moon-buggy            # drive a buggy across the moon's surface
     ninvaders             # Space Invaders clone for the terminal
     nsnake                # classic snake game
     nudoku                # Sudoku game for the terminal
@@ -67,8 +68,6 @@
     ## GUI Applications
     audacity              # audio software
     blender               # 3D creation suite
-#    discord               # voice, video, and text chat app
-#    discord-gamesdk       # Library to allow other programs to interact with the Discord
     drawio                # digramm softwarer
     ferdium               # All your services in one place
     github-desktop        # graphical git client for github
@@ -81,7 +80,6 @@
     pavucontrol           # PulseAudio volume control GUI
     pitivi                # video editor
     remmina               # remote client
-#   rpi-imager            # raspberry pi imager
     thonny                # python IDE
     vscodium              # IDE
     vlc                   # media player

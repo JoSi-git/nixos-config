@@ -25,7 +25,7 @@
     XDG_SESSION_DESKTOP = "Hyprland";
     SDL_VIDEODRIVER = "wayland";
     CLUTTER_BACKEND = "wayland";
-    QML2_IMPORT_PATH = "${pkgs.quickshell}/share/qml2/qml:${config.programs.quickshell.configs.default}/modules";
+    QML2_IMPORT_PATH = "${pkgs.quickshell}/share/qml2/qml:${config.home.homeDirectory}/.config/quickshell/modules";
     GRIMBLAST_HIDE_CURSOR = 0;
   };
 }

@@ -47,55 +47,42 @@ outputs =
     {
       nixosConfigurations = {
         desktop = nixpkgs.lib.nixosSystem {
-          inherit system;
+          specialArgs = { inherit self inputs username system; host = "desktop"; };
           modules = [
           inputs.home-manager.nixosModules.home-manager
           inputs.stylix.nixosModules.stylix
           ./hosts/desktop
           {
             home-manager.sharedModules = [
-              inputs.nixcord.homeModules.nixcord
-            ];
+              inputs.nixcord.homeModules.nixcord ];
           }
-          ];
-          specialArgs = {
-            host = "desktop";
-            inherit self inputs username system;
-          };
+         ];
         };
+        
         laptop = nixpkgs.lib.nixosSystem {
-          inherit system;
+          specialArgs = { inherit self inputs username system; host = "laptop"; };
           modules = [
           inputs.home-manager.nixosModules.home-manager
           inputs.stylix.nixosModules.stylix
           ./hosts/laptop
           {
             home-manager.sharedModules = [
-              inputs.nixcord.homeModules.nixcord
-            ];
+              inputs.nixcord.homeModules.nixcord ];
           }
-          ];
-          specialArgs = {
-            host = "laptop";
-            inherit self inputs username system;
-          };
+         ];
         };
+        
         vm = nixpkgs.lib.nixosSystem {
-          inherit system;
+          specialArgs = { inherit self inputs username system; host = "vm"; };
           modules = [
           inputs.home-manager.nixosModules.home-manager
           inputs.stylix.nixosModules.stylix
           ./hosts/vm
           {
             home-manager.sharedModules = [
-              inputs.nixcord.homeModules.nixcord
-            ];
+              inputs.nixcord.homeModules.nixcord ];
           }
-          ];
-          specialArgs = {
-            host = "vm";
-            inherit self inputs username system;
-          };
+         ];
         };
       };
     };

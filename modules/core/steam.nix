@@ -1,5 +1,11 @@
 { pkgs, lib, ... }:
 {
+ 
+  hardware.graphics = {
+    enable = true;
+    enable32Bit = true;
+  };
+  
   programs = {
     steam = {
       enable = true;
@@ -14,7 +20,7 @@
 
     gamescope = {
       enable = true;
-      capSysNice = true;
+      capSysNice = false;
       args = [
         "--rt"
         "--expose-wayland"

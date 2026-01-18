@@ -10,7 +10,6 @@
       "float on, match:class ^(Audacious)$"
       "float on, match:class ^(org.gnome.Calculator)$"
       "float on, match:class ^(org.gnome.FileRoller)$"
-      "float on, match:class ^(org.pulseaudio.pavucontrol)$"
       "float on, match:class ^(SoundWireServer)$"
       "float on, match:class ^(.sameboy-wrapped)$"
 
@@ -22,12 +21,6 @@
       # Workspace Assignment
       "workspace 5, match:class ^(Spotify)$"
       "workspace 3, match:class ^(discord)$"
-
-      # Specific Title Rules
-      "float on, match:title ^(Transmission)$"
-      "float on, match:title ^(Volume Control)$"
-      "size 700 450, match:title ^(Volume Control)$"
-      "move 40 55%, match:title ^(Volume Control)$"
       
       # Firefox Sharing Indicator
       "float on, match:title ^(Firefox — Sharing Indicator)$"
@@ -60,6 +53,32 @@
       "opacity 1.0 override, match:class ^(Unity)$"
       "opacity 1.0 override, match:class ^(zen)$"
       "opacity 1.0 override, match:class ^(evince)$"
+      
+      # flameshot multi-display fix
+      "move 0 0,match:class (flameshot) match:title (flameshot)"
+      "pin on, match:class (flameshot) match:title (flameshot)"
+      "fullscreen_state 0, match:class (flameshot) match:title (flameshot)"
+      "float on, match:class (flameshot) match:title (flameshot)"
+
+      # blueman
+      "float on, match:class ^(.blueman-manager-wrapped)$"
+      "center on, match:class ^(.blueman-manager-wrapped)$"
+      "size 800 500, match:class ^(.blueman-manager-wrapped)$"
+
+      # IW GTK 
+      "float on, match:class ^(org.twosheds.iwgtk)$"
+      "center on, match:class ^(org.twosheds.iwgtk)$"
+      "size 800 500, match:class ^(org.twosheds.iwgtk)$"
+      
+      # pavucontrol
+      "float on, match:class ^(org.pulseaudio.pavucontrol)$"
+      "center on, match:class ^(org.twosheds.iwgtk)$"
+      "size 800 500, match:class ^(org.pulseaudio.pavucontrol)$"
+      
+      # winboat
+      "suppress_event maximize fullscreen activate activatefocus, match:class ^(winboat.*|Microsoft Word|Microsoft Outlook|Microsoft Excel|Microsoft PowerPoint|File Explorer|wlfreerdp)$"
+      "fullscreen on, match:class ^(winboat.*|Microsoft Word|Microsoft Outlook|Microsoft Excel|Microsoft PowerPoint|File Explorer|wlfreerdp)$"
+      "no_initial_focus on, match:class ^(winboat.*|Microsoft Word|Microsoft Outlook|Microsoft Excel|Microsoft PowerPoint|File Explorer|wlfreerdp)$"
 
       # XWayland Video Bridge
       "opacity 0.0 override, match:class ^(xwaylandvideobridge)$"
@@ -67,7 +86,9 @@
       "no_initial_focus on, match:class ^(xwaylandvideobridge)$"
       "max_size 1 1 on, match:class ^(xwaylandvideobridge)$"
       "no_blur on, match:class ^(xwaylandvideobridge)$"
-
+      
+      "force_rgbx on, match:xwayland 1, match:class ^(?!winboat-).+$"
+      
       # General Floating Rules
       "center on, match:float true"
       "center on, match:class ^(dialog)$"
@@ -77,17 +98,17 @@
       "no_shadow on, match:class .*, match:title .*" 
  #     "no_blur on, match:class .*, match:title .*" 
       
-      # No Gaps/Borders for specific full-window workspaces (Bleiben gleich)
-      "border_size 0, rounding 0, match:float false, match:workspace w[t1]"
-      "border_size 0, rounding 0, match:float false, match:workspace w[tg1]"
-      "border_size 0, rounding 0, match:float false, match:workspace f[1]"
+      # No Gaps/Borders for specific full-window workspaces
+#      "border_size 0, rounding 0, match:float false, match:workspace w[t1]"
+#      "border_size 0, rounding 0, match:float false, match:workspace w[tg1]"
+#      "border_size 0, rounding 0, match:float false, match:workspace f[1]"
     ];
 
-    # Workspace-level Gaps Rules (Bleiben gleich)
-    workspace = [
-      "w[t1], gapsout:0, gapsin:0"
-      "w[tg1], gapsout:0, gapsin:0"
-      "f[1], gapsout:0, gapsin:0"
-    ];
+    # Workspace-level Gaps Rules
+#    workspace = [
+#      "w[t1], gapsout:0, gapsin:0"
+#      "w[tg1], gapsout:0, gapsin:0"
+#      "f[1], gapsout:0, gapsin:0"
+#    ];
   };
 }

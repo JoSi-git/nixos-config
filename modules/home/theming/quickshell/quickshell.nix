@@ -1,20 +1,13 @@
-{ config, pkgs, lib,... }: 
+{ config, pkgs, lib, ... }:
 
 let
-  configName = "default";
-
-  shellAssets = ./config;
-  
-in 
+  localConfigDir = "${config.home.homeDirectory}/nixos-config/modules/home/theming/quickshell/config";
+in
 {
+  home.file.".config/quickshell".source = config.lib.file.mkOutOfStoreSymlink localConfigDir;
+
   programs.quickshell = {
     enable = true;
-    
-    package = pkgs.quickshell; 
-
-    configs = {
-      ${configName} = shellAssets; 
-    };
-    activeConfig = configName;
+    package = pkgs.quickshell;
   };
 }
