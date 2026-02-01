@@ -21,10 +21,6 @@ let
     builtins.readFile ./toggle_float.sh
   );
 
-  maxfetch = pkgs.writeShellScriptBin "maxfetch" (
-    builtins.readFile ./maxfetch.sh
-  );
-
   compress = pkgs.writeShellScriptBin "compress" (
     builtins.readFile ./compress.sh
   );
@@ -47,10 +43,15 @@ let
   screenshot = pkgs.writeShellScriptBin "screenshot" (
     builtins.readFile ./screenshot.sh
   );
-
-  toogle-nitch = pkgs.writeShellScriptBin "toggle-nitch" (
-    builtins.readFile ./toggle-nitch.sh
+  
+  battery_check = pkgs.writeShellScriptBin "battery_check" (
+    builtins.readFile ./battery_check.sh
   );
+  
+  ocr = pkgs.writeShellScriptBin "ocr" (
+    builtins.readFile ./ocr.sh
+  );
+  
 in
 {
   home.packages = with pkgs; [
@@ -60,14 +61,14 @@ in
     toggle_blur
     toggle_oppacity
     toggle_float
-    maxfetch
     compress
     extract
     show-keybinds
     ascii
     record
     screenshot
-    toogle-nitch
+    battery_check
+    ocr
   ];
 }
 

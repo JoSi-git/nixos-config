@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ pkgs, lib, ... }:
 
 {
   fonts.fontconfig.enable = true;
@@ -17,30 +17,35 @@
     '')
   ];
 
+  home.pointerCursor = {
+    gtk.enable = true;
+    x11.enable = true;
+    name = "Nordzy-cursors";
+    package = pkgs.nordzy-cursor-theme;
+    size = 22;
+    
+    hyprcursor.enable = true;
+    hyprcursor.size = 22;
+  };
+
   gtk = {
     enable = true;
-
-#    font = {
-#      name = "JetBrains Mono Nerd Font";
-#      size = 12;
-#   };
-
     iconTheme = {
       name = "Papirus-Dark";
+      package = pkgs.papirus-icon-theme;
     };
-
     cursorTheme = {
-      name = "Nordzy-hyprcursors";
+      name = "Nordzy-cursors";
       package = pkgs.nordzy-cursor-theme;
       size = 22;
     };
   };
 
   home.sessionVariables = {
-    XCURSOR_THEME = "Nordzy-hyprcursors";
-    XCURSOR_SIZE = "22";
+    HYPRCURSOR_THEME = lib.mkForce "Nordzy-hyprcursors";
+    HYPRCURSOR_SIZE = lib.mkForce 22;
     
-    HYPRCURSOR_THEME = "Nordzy-hyprcursors";
-    HYPRCURSOR_SIZE = "22";
+    XCURSOR_THEME = "Nordzy-cursors";
+    XCURSOR_SIZE = 22;
   };
 }

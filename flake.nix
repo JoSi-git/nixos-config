@@ -20,7 +20,8 @@
     };
     
     nixcord = {
-    url = "github:kaylorben/nixcord";
+      url = "github:kaylorben/nixcord";
+      inputs.nixpkgs.follows = "nixpkgs";
     };
     
     nur.url = "github:nix-community/NUR";
@@ -53,7 +54,6 @@ outputs = { nixpkgs, ... }@inputs:
           home-manager.useGlobalPkgs = true;
           home-manager.useUserPackages = true;
           home-manager.extraSpecialArgs = { inherit inputs; };
-          home-manager.sharedModules = [ inputs.nixcord.homeModules.nixcord ];
         }
         inputs.stylix.nixosModules.stylix
       ];

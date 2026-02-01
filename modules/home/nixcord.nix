@@ -20,7 +20,7 @@
       frameless = true;
       
       plugins = {
-      # Custom Plugin COnfig
+      # Custom Plugin Config
       };
     };
   };

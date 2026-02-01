@@ -31,15 +31,20 @@
       "float on, match:class ^(file_progress)$"
       "float on, match:class ^(confirm)$"
       "float on, match:class ^(dialog)$"
-      "float on, match:class ^(download)$"
       "float on, match:class ^(notification)$"
       "float on, match:class ^(error)$"
       "float on, match:class ^(confirmreset)$"
-      "float on, match:title ^(Open File)$"
-      "float on, match:title ^(File Upload)$"
       "float on, match:title ^(branchdialog)$"
       "float on, match:title ^(Confirm to replace files)$"
       "float on, match:title ^(File Operation Progress)$"
+      
+      # File operations
+      "float on, match:class ^(download)$"
+      "center on, match:class ^(download)$"
+      "float on, match:title ^(Open File)$"
+      "center on, match:class ^(Open File)$"
+      "float on, match:title ^(File Upload)$"
+      "center on, match:class ^(File Upload)$"
       
       # Idle Inhibit & Opacity
       "idle_inhibit focus, match:class ^(mpv)$"

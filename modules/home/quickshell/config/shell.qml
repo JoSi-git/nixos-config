@@ -10,7 +10,7 @@ ShellRoot {
         
         delegate: Loader {
             active: true
-            source: "./modules/bar/bar.qml"
+            source: "./bar/bar.qml"
             onLoaded: item.screen = modelData
         }
     }

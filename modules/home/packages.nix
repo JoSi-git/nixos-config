@@ -6,6 +6,7 @@
     ## CLI Utilities
     bat                   # cat clone with syntax highlighting and Git integration
     duff                  # find duplicate files quickly
+    eza                   # ls clone with advanced features
     fd                    # simple, fast and user-friendly alternative to find
     ffmpeg                # audio/video processing tool
     file                  # determine file type
@@ -15,12 +16,11 @@
     gtrash                # CLI trash utility (safer rm)
     imv                   # Command line media image viewer
     iwgtk                 # Lightweight, graphical wifi management utility for Linux
+    micro                 # nano replacement
     mpv                   # Command line media player 
     jq                    # json tool
     lazygit               # git tool
     man-pages             # additional manual pages
-    neofetch              # system information tool
-    nerdfetch             # system information tool
     ncdu                  # disk usage analyzer with an ncurses interface
     nitch                 # minimal system fetch tool
     nixd                  # language server for Nix
@@ -82,7 +82,7 @@
     thonny                # python IDE
     vscodium              # IDE
     vlc                   # media player
-    
-    filezilla
+    discord               # temporary workaround while nixcord is broken
+    zenity                # gtk based message windows
   ];
 }

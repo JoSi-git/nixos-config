@@ -1,6 +1,13 @@
 { lib, ... }:
 {
   wayland.windowManager.hyprland.settings = {
+      env = [
+        "HYPRCURSOR_THEME,Nordzy-hyprcursors"
+        "HYPRCURSOR_SIZE,22"
+        "XCURSOR_THEME,Nordzy-cursors"
+        "XCURSOR_SIZE,22"
+      ];
+      
       input = {
         kb_layout = "ch";
         kb_options = "grp:alt_caps_toggle";
@@ -35,7 +42,6 @@
         animate_manual_resizes = false;
         enable_swallow = true;
         focus_on_activate = true;
-        # force_software_cursor = false;
         middle_click_paste = false;
       };
 

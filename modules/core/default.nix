@@ -3,7 +3,7 @@
     ./better-control.nix   
     ./bootloader.nix
     ./docker.nix
-    # # # # # # # # ./hardware.nix
+    ./hardware.nix
     ./xserver.nix
     ./network.nix
     ./nvidia.nix

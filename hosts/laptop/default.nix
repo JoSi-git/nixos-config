@@ -72,7 +72,7 @@
     serviceConfig = {
       Type = "oneshot";
       ExecStart = ''
-        ${pkgs.asusctl}/bin/asusctl aura static -c ffffff
+        ${pkgs.asusctl}/bin/asusctl aura effect static -c ffffff
       '';
       RemainAfterExit = true;
     };

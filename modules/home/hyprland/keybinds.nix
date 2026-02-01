@@ -29,6 +29,7 @@
         "$mainMod, X, togglesplit,"
         "$mainMod, T, exec, kitty"
         "$mainMod, E, exec, nemo"
+        "$mainMod, O, exec, ocr"
         "ALT, E, exec, hyprctl dispatch exec '[float; size 1111 700] nemo'"
         "$mainMod SHIFT, E, exec, hyprctl dispatch exec '[float; size 1111 700] ghostty -e yazi'"
         "$mainMod SHIFT, B, exec, toggle_waybar"

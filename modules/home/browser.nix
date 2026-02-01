@@ -16,7 +16,7 @@
       languagePacks = [ "de" "en-US" ];
       
       profiles = {
-          default = {
+          josi = {
           };
         };
 
@@ -55,11 +55,17 @@
             install_url = "https://addons.mozilla.org/firefox/downloads/latest/1password-x-password-manager/latest.xpi";
             installation_mode = "force_installed";
           };
-        };
-  
+          # New Tab Override
+          "extension@tabliss.io" = {
+                install_url = "https://addons.mozilla.org/firefox/downloads/file/3940751/latest.xpi";
+                installation_mode = "force_installed";
+              };
+          };
+
         /* ---- PREFERENCES ---- */
         # Check about:config for options.
         Preferences = { 
+          "toolkit.legacyUserProfileCustomizations.stylesheets" = lock-true;
           "browser.contentblocking.category" = { Value = "strict"; Status = "locked"; };
           "extensions.pocket.enabled" = lock-false;
           "extensions.screenshots.disabled" = lock-true;
