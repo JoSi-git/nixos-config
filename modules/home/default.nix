@@ -17,9 +17,10 @@
     ./scripts/scripts.nix          # personal scripts
     ./spicetify.nix                # custom spotify client
     ./stylix.nix                   # nixos alternative to classic gtk theming
-    ./sway                         # notification center + widgets
+    ./swayosd.nix                  # notification center + widgets
     ./waypaper.nix                 # GUI wallpaper picker
     ./winboat.nix                  # run windows apps on linux
+    ./wlogout                      # logout menu
     ./xdg-mimes.nix                # xdg config
     ./zsh                          # shell
   ];

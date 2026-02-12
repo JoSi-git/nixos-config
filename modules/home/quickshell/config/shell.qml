@@ -3,7 +3,7 @@ import QtQuick
 import Quickshell
 
 ShellRoot {
-    id: root
+    id: rootq
 
     Instantiator {
         model: Quickshell.screens

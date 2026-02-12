@@ -1,14 +1,19 @@
-{ ... }: {
-  wayland.windowManager.hyprland.settings.exec-once = [
-        "swww-daemon &"
-        "hyprlock"
-        "dbus-update-activation-environment --all --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP"
-        "systemctl --user import-environment WAYLAND_DISPLAY XDG_CURRENT_DESKTOP"
+{ pkgs, config, lib, ... }:
+{
+  wayland.windowManager.hyprland.settings = {
+    env = lib.mapAttrsToList (n: v: "${n},${builtins.toString v}") config.home.sessionVariables;
 
-        "battery_check &"
-        "wl-clip-persist --clipboard both &"
-        "wl-paste --watch cliphist store &"
-        "quickshell"
-#        "waybar &"
-  ];
+    exec-once = [
+      "dbus-update-activation-environment --systemd --all"
+      "systemctl --user import-environment --all"
+
+      "swww-daemon &"
+      "hyprlock"
+      "battery_check &"
+      "wl-clip-persist --clipboard both &"
+      "wl-paste --watch cliphist store &"
+      "quickshell"
+      "quickshell -p ~/.config/quickshell/Overview"
+    ];
+  };
 }

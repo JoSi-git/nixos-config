@@ -48,10 +48,6 @@ let
     builtins.readFile ./battery_check.sh
   );
   
-  ocr = pkgs.writeShellScriptBin "ocr" (
-    builtins.readFile ./ocr.sh
-  );
-  
 in
 {
   home.packages = with pkgs; [
@@ -68,7 +64,6 @@ in
     record
     screenshot
     battery_check
-    ocr
   ];
 }
 

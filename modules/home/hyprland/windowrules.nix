@@ -80,6 +80,10 @@
       "center on, match:class ^(org.twosheds.iwgtk)$"
       "size 800 500, match:class ^(org.pulseaudio.pavucontrol)$"
       
+      # screenshot
+      "float on, match:class ^(com.gabm.satty)$"
+      "size 1280 720, match:class ^(com.gabm.satty)$"
+
       # winboat
       "suppress_event maximize fullscreen activate activatefocus, match:class ^(winboat.*|Microsoft Word|Microsoft Outlook|Microsoft Excel|Microsoft PowerPoint|File Explorer|wlfreerdp)$"
       "fullscreen on, match:class ^(winboat.*|Microsoft Word|Microsoft Outlook|Microsoft Excel|Microsoft PowerPoint|File Explorer|wlfreerdp)$"
@@ -101,14 +105,14 @@
       # Remove context menu transparency
       "opaque on, match:class .*, match:title .*" 
       "no_shadow on, match:class .*, match:title .*" 
- #     "no_blur on, match:class .*, match:title .*" 
+ #     "no_blur on, match:class .*, match:title .*"
       
       # No Gaps/Borders for specific full-window workspaces
 #      "border_size 0, rounding 0, match:float false, match:workspace w[t1]"
 #      "border_size 0, rounding 0, match:float false, match:workspace w[tg1]"
 #      "border_size 0, rounding 0, match:float false, match:workspace f[1]"
     ];
-
+    
     # Workspace-level Gaps Rules
 #    workspace = [
 #      "w[t1], gapsout:0, gapsin:0"

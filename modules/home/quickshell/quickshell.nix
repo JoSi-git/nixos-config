@@ -9,6 +9,9 @@ in
     enable = true;
     package = pkgs.quickshell;
   };
+  home.packages = [
+    pkgs.qt6.qtwayland
+  ];
 }
 
 

@@ -73,7 +73,6 @@
     gnome-calculator      # calculator applicationk management utility
     onlyoffice-desktopeditors #
     mission-center        # system resource monitor
-    mixxx                 # DJ Software
     obsidian              # note-taking and knowledge management app
     paleta                # color pallate generator
     pavucontrol           # PulseAudio volume control GUI

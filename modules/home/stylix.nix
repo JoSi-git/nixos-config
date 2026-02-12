@@ -3,9 +3,7 @@
     stylix = {
       enable = true;
       polarity = "dark";
-      
       targets.spicetify.enable = false;
-      targets.waybar.enable = false;
       
       targets.firefox.enable = true;
       targets.firefox.profileNames = [ "josi" ];

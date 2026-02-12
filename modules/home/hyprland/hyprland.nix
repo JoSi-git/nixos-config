@@ -1,19 +1,22 @@
 { inputs, pkgs,... }:
 {
   home.packages = with pkgs; [
-    swww
-    slurp
+    cliphist
+    direnv
+    glib
     grim
     grimblast
-    hyprpicker
-    wl-clip-persist
-    cliphist
-    wf-recorder
-    glib
-    wayland
-    direnv
     hyprkeys
+    hyprpicker
+    imagemagick
+    libnotify
+    satty
+    swww
+    slurp
     tesseract
+    wayland
+    wf-recorder
+    wl-clip-persist
   ];
 
   systemd.user.targets.hyprland-session.Unit.Wants = [

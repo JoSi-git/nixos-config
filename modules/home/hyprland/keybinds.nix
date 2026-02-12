@@ -29,7 +29,6 @@
         "$mainMod, X, togglesplit,"
         "$mainMod, T, exec, kitty"
         "$mainMod, E, exec, nemo"
-        "$mainMod, O, exec, ocr"
         "ALT, E, exec, hyprctl dispatch exec '[float; size 1111 700] nemo'"
         "$mainMod SHIFT, E, exec, hyprctl dispatch exec '[float; size 1111 700] ghostty -e yazi'"
         "$mainMod SHIFT, B, exec, toggle_waybar"
@@ -39,10 +38,9 @@
         "CTRL SHIFT, Escape, exec, hyprctl dispatch exec '[workspace 9] missioncenter'"
         "$mainMod, equal, exec, woomer"
 
-        # screenshot
-        ",Print, exec, screenshot --copy"
-        "$mainMod, Print, exec, screenshot --save"
-        "$mainMod SHIFT, Print, exec, screenshot --swappy"
+        # screenshot / ocr
+        ",Print, exec, HYPRQUICKFRAME_EDITOR=1 quickshell -c ~/.config/quickshell/HyprQuickShot -n"
+        "$mainMod, Print, exec, quickshell -c ~/.config/quickshell/HyprQuickShot -n"
 
         # switch focus
         #"$mainMod, left,  movefocus, l"
@@ -131,6 +129,9 @@
 
         # clipboard manager
         "$mainMod, V, exec, cliphist list | rofi -dmenu -theme-str 'window {width: 50%;} listview {columns: 1;}' | cliphist decode | wl-copy"
+      
+        # quickshell workspace overview
+        "$mainMod, TAB, exec, qs ipc -p ~/.config/quickshell/Overview call overview toggle"
       ];
 
       # binds active in lockscreen

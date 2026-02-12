@@ -13,7 +13,7 @@
       };
       hyprland = {
         default = [ "gtk" "hyprland" ];
-        "org.freedesktop.impl.portal.Settings" = [ "none" ];
+        "org.freedesktop.impl.portal.Settings" = [ "gtk" ];
       };
     };
 

@@ -3,7 +3,9 @@ import QtQuick
 
 QtObject {
     readonly property color colBg: "#0b1119"
+    readonly property color colBg02: "#242B34"
     readonly property color colBorder: "#C0C0C0"
+    readonly property color colBorder02: "#3c3836"
     readonly property color colWhite: "#FFFFFF"
     readonly property color colRed: "#CC241D"
     readonly property color colGreen: "#32CD32"
