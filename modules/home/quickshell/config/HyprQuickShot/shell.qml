@@ -1,3 +1,11 @@
+/*
+ * Copyright (c) 2026 Ronin-CK
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+
+import Qt5Compat.GraphicalEffects
 import QtQuick
 import QtQuick.Controls
 import Quickshell
@@ -5,99 +13,330 @@ import Quickshell.Hyprland
 import Quickshell.Io
 import Quickshell.Wayland
 import Quickshell.Widgets
-import ".."
 
 FreezeScreen {
     id: root
 
-    // --- Configuration ---
     property var activeScreen: null
     property var hyprlandMonitor: Hyprland.focusedMonitor
-    property string tempPath
-    property string cropPath
-
+    property string tempPath: ""
+    property string cropJpg: ""
+    property string lensHtml: ""
     property string mode: "region"
-    property var modes: ["region", "window", "screen", "ocr", "lens"]
-    property bool editorMode: Quickshell.env("HYPRQUICKFRAME_EDITOR") === "1"
+    property var modes: ["edit", "region", "window", "ocr", "lens", "temp"]
+    property bool tempActive: false
+    property bool editActive: false
+    property bool shareActive: false
+    property int connectivityStatus: 0
+    readonly property real tabItemSize: 100
+    readonly property real controlHeight: 50
+    readonly property real targetMenuWidth: (modes.length - (editActive ? 1 : 0) - (tempActive ? 1 : 0)) * tabItemSize + 8
 
+    function parseTOML(text) {
+        let result = {
+        };
+        let section = "";
+        const lines = text.split(/\r?\n/);
+        for (let i = 0; i < lines.length; i++) {
+            let line = lines[i].trim();
+            if (!line || line.startsWith("#"))
+                continue;
 
-    // --- Action Logic ---
-    function executeAction(x, y, width, height) {
-        // Ignore tiny accidental drags
-        if (width < 10 || height < 10) {
-            Qt.quit();
-            return;
+            const secMatch = line.match(/^\[(\w+)\]$/);
+            if (secMatch) {
+                section = secMatch[1];
+                continue;
+            }
+            const quotedMatch = line.match(/^(\w+)\s*=\s*"([^"]*)"/);
+            if (quotedMatch) {
+                const rawKey = quotedMatch[1];
+                const key = section ? section + rawKey.charAt(0).toUpperCase() + rawKey.slice(1) : rawKey;
+                result[key] = quotedMatch[2];
+                continue;
+            }
+            const unquotedMatch = line.match(/^(\w+)\s*=\s*([^\s#]+)/);
+            if (unquotedMatch) {
+                const rawKey = unquotedMatch[1];
+                const key = section ? section + rawKey.charAt(0).toUpperCase() + rawKey.slice(1) : rawKey;
+                let val = unquotedMatch[2];
+                if (val === "true") {
+                    val = true;
+                } else if (val === "false") {
+                    val = false;
+                } else {
+                    const num = parseFloat(val);
+                    if (!isNaN(num))
+                        val = num;
+
+                }
+                result[key] = val;
+                continue;
+            }
         }
+        return result;
+    }
 
+    function shellEscape(s) {
+        return "'" + s.replace(/'/g, "'\\''") + "'";
+    }
+
+    function calculateCrop(x, y, width, height) {
+        let minX = Infinity;
+        let minY = Infinity;
+        const monitors = Hyprland.monitors.values;
+        for (const m of monitors) {
+            minX = Math.min(minX, m.lastIpcObject.x);
+            minY = Math.min(minY, m.lastIpcObject.y);
+        }
         const scale = hyprlandMonitor.scale;
-        const scaledX = Math.round(x * scale);
-        const scaledY = Math.round(y * scale);
-        const scaledWidth = Math.round(width * scale);
-        const scaledHeight = Math.round(height * scale);
+        const monitorX = root.hyprlandMonitor.lastIpcObject.x;
+        const monitorY = root.hyprlandMonitor.lastIpcObject.y;
+        const globalX = Math.round((x + monitorX) * scale);
+        const globalY = Math.round((y + monitorY) * scale);
+        return {
+            "cropX": globalX - Math.round(minX * scale),
+            "cropY": globalY - Math.round(minY * scale),
+            "scaledWidth": Math.round(width * scale),
+            "scaledHeight": Math.round(height * scale)
+        };
+    }
 
-        root.visible = false;
+    function cleanup() {
+        Quickshell.execDetached(["rm", "-f", tempPath, cropJpg, lensHtml]);
+    }
 
-        var cmd = "";
-        const picturesDir = Quickshell.env("XDG_PICTURES_DIR") || (Quickshell.env("HOME") + "/Pictures/Screenshots");
+    function saveScreenshot(x, y, width, height) {
+        const crop = calculateCrop(x, y, width, height);
+        const picturesBase = Quickshell.env("XDG_PICTURES_DIR") || (Quickshell.env("HOME") + "/Pictures");
+        const picturesDir = picturesBase + "/Screenshots";
         const now = new Date();
         const timestamp = Qt.formatDateTime(now, "yyyy-MM-dd_hh-mm-ss");
         const outputPath = `${picturesDir}/screenshot-${timestamp}.png`;
-        const currentMode = root.mode;
+        const tempSnip = Quickshell.cachePath(`snip-${timestamp}.png`);
+        const ePicturesDir = shellEscape(picturesDir);
+        const eOutputPath = shellEscape(outputPath);
+        const eTempPath = shellEscape(tempPath);
+        const eTempSnip = shellEscape(tempSnip);
+        const shareCmd = "kdeconnect-cli -l | grep 'reachable' | grep -oP '[a-f0-9-]{8,}'" + " | head -1 | xargs -I{} sh -c" + " 'kdeconnect-cli -d {} --share \"$1\" && sleep 0.2" + " && kdeconnect-cli -d {} --send-clipboard' --";
+        const maybeShare = (escapedPath) => {
+            return root.shareActive ? ` && ${shareCmd} ${escapedPath}` : "";
+        };
+        const shareTag = root.shareActive ? " & phone" : "";
+        const mkdirCmd = `mkdir -p ${ePicturesDir}`;
+        const cropCmd = `magick ${eTempPath} -crop ` + `${crop.scaledWidth}x${crop.scaledHeight}` + `+${crop.cropX}+${crop.cropY}`;
+        const sattyCommand = `${mkdirCmd} && ${cropCmd} png:- ` + `| satty --filename - --fullscreen ` + `--output-filename ${eOutputPath} --early-exit --init-tool brush ` + `&& wl-copy --type image/png < ${eOutputPath}` + `${maybeShare(eOutputPath)}; rm -f ${eTempPath}`;
+        const defaultSaveCommand = `${mkdirCmd} && ${cropCmd} ${eOutputPath} ` + `&& wl-copy --type image/png < ${eOutputPath}` + `${maybeShare(eOutputPath)} ` + `&& notify-send -a "HyprQuickFrame" -i ${eOutputPath} ` + `-h string:image-path:${eOutputPath} "Screenshot Saved" ` + `"Saved to ${picturesDir}"; rm -f ${eTempPath}`;
+        const defaultTempCommand = `${cropCmd} ${eTempSnip} ` + `&& wl-copy --type image/png < ${eTempSnip}` + `${maybeShare(eTempSnip)} ` + `&& notify-send -a "HyprQuickFrame" "Screenshot Copied" ` + `"Copied to clipboard${shareTag}"; ` + `rm -f ${eTempPath} ${eTempSnip}`;
+        
+        const ocrPipeline = [
+            `magick ${eTempPath} -crop ${crop.scaledWidth}x${crop.scaledHeight}+${crop.cropX}+${crop.cropY} -`,
+            `tesseract - - -l eng`,
+            `awk 'BEGIN{RS=""; FS="\\n"; ORS="\\n\\n"} {for(i=1;i<=NF;i++){printf "%s",$i; if(i<NF)printf " "} printf "\\n"}'`,
+            `sed 's/  */ /g; s/[[:space:]]*$//'`,
+            `wl-copy`
+        ].join(" | ");
+        const ocrCommand = `${ocrPipeline} && notify-send 'OCR Complete' 'Text copied to clipboard'` + ` ; rm -f ${eTempPath}`;
 
-        if (currentMode === "region" || currentMode === "window" || currentMode === "screen") {
-            if (root.editorMode) {
-                cmd = `magick "${tempPath}" -crop ${scaledWidth}x${scaledHeight}+${scaledX}+${scaledY} png:- | satty --filename - --output-filename "${outputPath}" --early-exit --init-tool brush`;
-            } else {
-                cmd = `magick "${tempPath}" -crop ${scaledWidth}x${scaledHeight}+${scaledX}+${scaledY} "${outputPath}" && wl-copy --type image/png < "${outputPath}" && notify-send -a "HyprQuickShot" -i "${outputPath}" -h string:image-path:"${outputPath}" "Screenshot Saved" "Saved to Pictures/Screenshots"`;
-            }
-        } else if (currentMode === "ocr") {
-            cmd = `magick "${tempPath}" -crop ${scaledWidth}x${scaledHeight}+${scaledX}+${scaledY} - | tesseract - - -l eng | wl-copy && notify-send 'OCR Complete' 'Text copied to clipboard'`;
-        } else if (currentMode === "lens") {
-            const cropTimestamp = Date.now();
-            const cropPath = Quickshell.cachePath(`snip-crop-${cropTimestamp}.png`);
-            cmd = `magick "${tempPath}" -crop ${scaledWidth}x${scaledHeight}+${scaledX}+${scaledY} "${cropPath}" && imageLink=$(curl -sF files[]=@"${cropPath}" 'https://uguu.se/upload' | jq -r '.files[0].url') && xdg-open "https://lens.google.com/uploadbyurl?url=\${imageLink}" && rm "${cropPath}"`;
+        const buildHtml = [
+            `echo '<html><body style="margin:0;display:flex;justify-content:center;align-items:center;height:100vh;background:#111;color:#fff;font-family:system-ui"><p>Searching with Google Lens…</p><form id="f" method="POST" enctype="multipart/form-data" action="https://lens.google.com/v3/upload"></form><script>'`,
+            `echo "var b=atob('$B64');"`,
+            `echo 'var a=new Uint8Array(b.length);for(var i=0;i<b.length;i++)a[i]=b.charCodeAt(i);var d=new DataTransfer();d.items.add(new File([a],"i.jpg",{type:"image/jpeg"}));var inp=document.createElement("input");inp.type="file";inp.name="encoded_image";inp.files=d.files;document.getElementById("f").appendChild(inp);document.getElementById("f").submit();'`,
+            `echo '</script></body></html>'`
+        ].join(" ; ");
+        const lensCommand = [
+            `magick ${eTempPath} -crop ${crop.scaledWidth}x${crop.scaledHeight}+${crop.cropX}+${crop.cropY} -resize '1000x1000>' -strip -quality 85 ${shellEscape(root.cropJpg)}`,
+            `B64=$(base64 -w0 ${shellEscape(root.cropJpg)})`,
+            `{ ${buildHtml} ; } > ${shellEscape(root.lensHtml)}`,
+            `xdg-open ${shellEscape(root.lensHtml)}`
+        ].join(" && ");
+
+        let cmd;
+        if (root.mode === "ocr") {
+            cmd = ocrCommand;
+        } else if (root.mode === "lens") {
+            cmd = lensCommand;
+        } else if (root.editActive) {
+            cmd = sattyCommand;
+        } else if (root.tempActive) {
+            cmd = defaultTempCommand;
+        } else {
+            cmd = defaultSaveCommand;
         }
-
-
-        cmd += ` && rm "${tempPath}"`;
-        actionProcess.command = ["sh", "-c", cmd];
-        actionProcess.running = true;
+        screenshotProcess.command = ["sh", "-c", cmd];
+        screenshotProcess.running = true;
+        root.visible = false;
     }
 
-
-    // --- Lifecycle and Setup ---
     visible: false
     targetScreen: activeScreen
-
-    property bool isInitialized: false
-
-    function startCapture() {
-        if (isInitialized || !hyprlandMonitor) return;
-
-        isInitialized = true;
-        const timestamp = Date.now();
-        const path = Quickshell.cachePath(`screenshot-${timestamp}.png`);
-        tempPath = path;
-        captureProcess.command = ["grim", "-o", root.hyprlandMonitor.name, path];
-        captureProcess.running = true;
-    }
-
     Component.onCompleted: {
-        startCapture();
-    }
-
-    onHyprlandMonitorChanged: {
-        startCapture();
+        const timestamp = Date.now();
+        const rand = Math.floor(Math.random() * 100000);
+        const path = Quickshell.cachePath(`screenshot-${timestamp}-${rand}.png`);
+        tempPath = path;
+        root.cropJpg = Quickshell.cachePath(`snip-crop-${timestamp}.jpg`);
+        root.lensHtml = Quickshell.cachePath(`snip-lens-${timestamp}.html`);
+        captureProcess.command = ["grim", "-l", "0", path];
+        captureProcess.running = true;
+        connectivityProcess.running = true;
     }
 
     Process {
         id: captureProcess
+
         running: false
-        onExited: showTimer.start()
+        onExited: (code) => {
+            if (code === 0) {
+                showTimer.start();
+            } else {
+                cleanup();
+                Qt.quit();
+            }
+        }
+    }
+
+    Theme {
+        id: theme
+    }
+
+    FileView {
+        id: themeFile
+
+        property string configHome: Quickshell.env("XDG_CONFIG_HOME") || (Quickshell.env("HOME") + "/.config")
+        property string userPath1: configHome + "/hyprquickframe/theme.toml"
+        property string userPath2: configHome + "/quickshell/HyprQuickFrame/theme.toml"
+        property string defaultPath: Quickshell.shellDir.toString().replace(/^file:\/\//, "") + "/theme.toml"
+
+        path: defaultPath
+        Component.onCompleted: {
+            themePathCheck.command = ["sh", "-c", `if [ -f "${userPath1}" ]; then echo "${userPath1}";
+                 elif [ -f "${userPath2}" ]; then echo "${userPath2}";
+                 else echo "${defaultPath}"; fi`];
+            themePathCheck.running = true;
+        }
+        onTextChanged: {
+            try {
+                let rawText = (typeof text === 'function') ? text() : text;
+                theme.source = root.parseTOML(rawText);
+            } catch (e) {
+                console.warn("Failed to parse theme.toml:", e);
+            }
+        }
+    }
+
+    Process {
+        id: themePathCheck
+
+        running: false
+
+        stdout: StdioCollector {
+            onStreamFinished: {
+                themeFile.path = this.text.trim();
+                console.log("Theme loaded from:", themeFile.path);
+            }
+        }
+
+    }
+
+    Connections {
+        function onFocusedMonitorChanged() {
+            const monitor = Hyprland.focusedMonitor;
+            if (!monitor)
+                return ;
+
+            for (const screen of Quickshell.screens) {
+                if (screen.name === monitor.name)
+                    activeScreen = screen;
+
+            }
+        }
+
+        target: Hyprland
+        enabled: activeScreen === null
+    }
+
+    Shortcut {
+        sequence: "Escape"
+        onActivated: {
+            cleanup();
+            Qt.quit();
+        }
+    }
+
+    Shortcut {
+        sequence: "r"
+        onActivated: {
+            root.mode = "region";
+            root.tempActive = false;
+            root.editActive = false;
+        }
+    }
+
+    Shortcut {
+        sequence: "w"
+        onActivated: {
+            root.mode = "window";
+            root.tempActive = false;
+            root.editActive = false;
+        }
+    }
+
+    Shortcut {
+        sequence: "o"
+        onActivated: {
+            root.mode = "ocr";
+            root.tempActive = false;
+            root.editActive = false;
+        }
+    }
+
+    Shortcut {
+        sequence: "l"
+        onActivated: {
+            root.mode = "lens";
+            root.tempActive = false;
+            root.editActive = false;
+        }
+    }
+
+    Shortcut {
+        sequence: "s"
+        onActivated: root.saveScreenshot(0, 0, root.width, root.height)
+    }
+
+    Shortcut {
+        sequence: "e"
+        onActivated: {
+            root.editActive = !root.editActive;
+            if (root.editActive)
+                root.tempActive = false;
+
+        }
+    }
+
+    Shortcut {
+        sequence: "t"
+        onActivated: {
+            root.tempActive = !root.tempActive;
+            if (root.tempActive)
+                root.editActive = false;
+
+        }
+    }
+
+    Shortcut {
+        sequence: "k"
+        onActivated: {
+            root.shareActive = !root.shareActive;
+            if (root.shareActive && !connectivityProcess.running && root.connectivityStatus !== 0)
+                connectivityProcess.running = true;
+
+        }
     }
 
     Timer {
         id: showTimer
+
         interval: 50
         running: false
         repeat: false
@@ -105,105 +344,297 @@ FreezeScreen {
     }
 
     Process {
-        id: actionProcess
+        id: screenshotProcess
+
         running: false
-        onExited: Qt.quit()
-        stdout: StdioCollector { onStreamFinished: console.log(this.text) }
-        stderr: StdioCollector { onStreamFinished: console.log(this.text) }
+        onExited: (code) => {
+            if (code !== 0)
+                console.error("Screenshot pipeline failed with exit code:", code);
+
+            Qt.quit();
+        }
+
+        stdout: StdioCollector {
+            onStreamFinished: {
+                if (this.text.trim())
+                    console.log(this.text);
+
+            }
+        }
+
+        stderr: StdioCollector {
+            onStreamFinished: {
+                if (this.text.trim())
+                    console.warn(this.text);
+
+            }
+        }
+
     }
 
-    Connections {
-        target: Hyprland
-        enabled: activeScreen === null
-        function onFocusedMonitorChanged() {
-            const monitor = Hyprland.focusedMonitor;
-            if (!monitor) return;
-            for (const screen of Quickshell.screens) {
-                if (screen.name === monitor.name)
-                    activeScreen = screen;
-            }
+    Process {
+        id: connectivityProcess
+
+        command: ["sh", "-c", "kdeconnect-cli -l | grep 'reachable'"]
+        onExited: (code) => {
+            root.connectivityStatus = (code === 0 ? 1 : 2);
         }
     }
 
-
-    // --- Shortcuts ---
-    Shortcut { sequence: "Escape"; onActivated: () => { Quickshell.execDetached(["rm", tempPath]); Qt.quit(); } }
-    Shortcut { sequence: "r"; onActivated: root.mode = "region" }
-    Shortcut { sequence: "w"; onActivated: root.mode = "window" }
-    Shortcut { sequence: "s"; onActivated: root.mode = "screen" }
-    Shortcut { sequence: "o"; onActivated: root.mode = "ocr" }
-    Shortcut { sequence: "l"; onActivated: root.mode = "lens" }
-
-
-
-    // --- Selectors ---
     RegionSelector {
         id: regionSelector
-        visible: root.mode === "region" || root.mode === "ocr" || root.mode === "lens"
+
+        visible: mode === "region" || mode === "ocr" || mode === "lens"
         anchors.fill: parent
-        onRegionSelected: (x, y, width, height) => executeAction(x, y, width, height)
+        dimOpacity: theme.dimOpacity
+        borderRadius: theme.borderRadius
+        outlineThickness: theme.outlineThickness
+        globalAnimations: theme.animations
+        onRegionSelected: (x, y, width, height) => {
+            saveScreenshot(x, y, width, height);
+        }
     }
 
     WindowSelector {
         id: windowSelector
-        visible: root.mode === "window"
+
+        visible: mode === "window"
         anchors.fill: parent
         monitor: root.hyprlandMonitor
-        onRegionSelected: (x, y, width, height) => executeAction(x, y, width, height)
+        dimOpacity: theme.dimOpacity
+        borderRadius: theme.borderRadius
+        outlineThickness: theme.outlineThickness
+        animateSelection: theme.animations
+        onRegionSelected: (x, y, width, height) => {
+            saveScreenshot(x, y, width, height);
+        }
     }
 
-
-    // --- UI Controls ---
     Rectangle {
-        id: control
+        id: segmentedControl
+
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.bottom: parent.bottom
-        anchors.bottomMargin: 60
-        width: 450
-        height: 50
+        anchors.bottomMargin: theme.bottomMargin
+        layer.enabled: true
+        height: root.controlHeight
+        width: root.targetMenuWidth
         radius: height / 2
-        color: Qt.rgba(0.15, 0.15, 0.15, 0.9)
-        border.color: Qt.rgba(1, 1, 1, 0.15)
+        color: theme.barBackground
+        border.color: theme.barBorder
         border.width: 1
 
         Rectangle {
             id: highlight
+
+            width: root.tabItemSize
             height: parent.height - 8
-            width: (parent.width - 8) / root.modes.length
             y: 4
             radius: height / 2
-            color: "#3478F6"
-            x: 4 + (root.modes.indexOf(root.mode) * width)
-            Behavior on x { NumberAnimation { duration: 250; easing.type: Easing.OutCubic } }
+            color: theme.accent
+            x: 4 + (root.modes.slice(0, root.modes.indexOf(root.mode)).filter((m) => {
+                if (m === "edit")
+                    return !root.editActive;
+
+                if (m === "temp")
+                    return !root.tempActive;
+
+                return true;
+            }).length * root.tabItemSize)
+
+            Behavior on x {
+                SpringAnimation {
+                    spring: 4
+                    damping: 0.25
+                    mass: 1
+                }
+
+            }
+
         }
 
         Row {
             anchors.fill: parent
             anchors.margins: 4
+
             Repeater {
                 model: root.modes
+
                 Item {
-                    width: (control.width - 8) / root.modes.length
-                    height: control.height - 8
+                    id: tabItem
+
+                    property bool isTemp: modelData === "temp"
+                    property bool isEdit: modelData === "edit"
+                    property bool isDisabled: (isEdit || isTemp) && (root.mode === "ocr" || root.mode === "lens")
+                    property bool collapsed: (isTemp && root.tempActive) || (isEdit && root.editActive)
+
+                    width: collapsed ? 0 : root.tabItemSize
+                    height: segmentedControl.height - 8
+                    visible: width > 0
+
                     MouseArea {
                         anchors.fill: parent
-                        hoverEnabled: true
+                        hoverEnabled: !isDisabled
+                        cursorShape: isDisabled ? Qt.ArrowCursor : Qt.PointingHandCursor
+                        enabled: !isDisabled
                         onClicked: {
-                            root.mode = modelData;
-                            if (modelData === "screen") {
-                                executeAction(0, 0, root.targetScreen.width, root.targetScreen.height);
+                            if (modelData === "temp") {
+                                root.tempActive = true;
+                                root.editActive = false;
+                            } else if (modelData === "edit") {
+                                root.editActive = true;
+                                root.tempActive = false;
+                            } else {
+                                root.mode = modelData;
+                                root.tempActive = false;
+                                root.editActive = false;
                             }
                         }
                     }
+
                     Text {
                         anchors.centerIn: parent
-                        text: modelData.charAt(0).toUpperCase() + modelData.slice(1)
-                        color: "white"
-                        font.weight: root.mode === modelData ? Font.DemiBold : Font.Normal
-                        font.pixelSize: 14
+                        text: {
+                            const icons = {
+                                "region": "󰒉",
+                                "window": "󱂬",
+                                "temp": "󰅇",
+                                "edit": "󰏫",
+                                "ocr": "󰈙",
+                                "lens": "󰍉"
+                            };
+                            const labels = {
+                                "region": "Region",
+                                "window": "Window",
+                                "temp": "Temp",
+                                "edit": "Edit",
+                                "ocr": "OCR",
+                                "lens": "Lens"
+                            };
+                            return icons[modelData] + "  " + labels[modelData];
+                        }
+                        color: tabItem.isDisabled ? "#555555" : ((modelData === "temp" || modelData === "edit") ? theme.barText : (root.mode === modelData ? theme.accentText : theme.barText))
+                        font.weight: (modelData === "temp" || modelData === "edit") ? Font.Medium : (root.mode === modelData ? Font.Bold : Font.Medium)
+                        font.pixelSize: 15
+                        opacity: tabItem.collapsed ? 0 : 1
+
+                        Behavior on opacity {
+                            enabled: root.tempActive || root.editActive
+
+                            NumberAnimation {
+                                duration: 150
+                            }
+
+                        }
+
                     }
+
+                    Behavior on width {
+                        SpringAnimation {
+                            spring: 4
+                            damping: 0.25
+                            mass: 1
+                        }
+
+                    }
+
+                }
+
+            }
+
+        }
+
+        Behavior on width {
+            SpringAnimation {
+                spring: 4
+                damping: 0.25
+                mass: 1
+            }
+
+        }
+
+        layer.effect: DropShadow {
+            transparentBorder: true
+            radius: 8
+            samples: 16
+            color: theme.barShadow
+            verticalOffset: 4
+        }
+
+    }
+
+    QuickToggle {
+        id: editToggleButton
+
+        active: root.editActive
+        disabled: root.mode === "ocr" || root.mode === "lens"
+        visible: !(root.mode === "ocr" || root.mode === "lens")
+        icon: "󰏫"
+        iconColor: theme.toggleEdit
+        backgroundColor: theme.toggleBackground
+        shadowColor: theme.toggleShadow
+        targetX: (root.width - root.targetMenuWidth) / 2 - 15 - width
+        targetY: segmentedControl.y + segmentedControl.height / 2
+        sourceX: root.width / 2 - 204 + 32
+        onClicked: root.editActive = false
+    }
+
+    QuickToggle {
+        id: tempToggleButton
+
+        active: root.tempActive
+        disabled: root.mode === "ocr" || root.mode === "lens"
+        visible: !(root.mode === "ocr" || root.mode === "lens")
+        icon: "󰅇"
+        iconColor: theme.toggleTemp
+        backgroundColor: theme.toggleBackground
+        shadowColor: theme.toggleShadow
+        targetX: (root.width + root.targetMenuWidth) / 2 + 15
+        targetY: segmentedControl.y + segmentedControl.height / 2
+        sourceX: root.width / 2 - 204 + 332
+        onClicked: root.tempActive = false
+    }
+
+    QuickToggle {
+        id: shareToggleButton
+
+        active: root.shareActive
+        icon: "󰄜"
+        iconColor: {
+            if (root.connectivityStatus === 1)
+                return theme.shareConnected;
+
+            if (root.connectivityStatus === 2)
+                return theme.shareErrorIcon;
+
+            return theme.sharePending;
+        }
+        backgroundColor: root.connectivityStatus === 2 ? theme.shareErrorBackground : theme.toggleBackground
+        shadowColor: theme.toggleShadow
+        pulse: root.connectivityStatus === 0
+        targetX: (root.width + root.targetMenuWidth) / 2 + 15 + (root.tempActive ? 44 + 10 : 0)
+        targetY: segmentedControl.y + segmentedControl.height / 2
+        sourceX: root.width / 2 + (root.targetMenuWidth / 2) - 22
+        onClicked: root.shareActive = false
+    }
+
+    Item {
+        anchors.fill: parent
+        z: 999
+
+        HoverHandler {
+            onPointChanged: {
+                if ((root.mode === "region" || root.mode === "ocr" || root.mode === "lens") && !regionSelector.pressed) {
+                    regionSelector.mouseX = point.position.x;
+                    regionSelector.mouseY = point.position.y;
+                }
+                if (root.mode === "window" && !windowSelector.pressed) {
+                    windowSelector.mouseX = point.position.x;
+                    windowSelector.mouseY = point.position.y;
                 }
             }
         }
+
     }
+
 }

@@ -3,6 +3,7 @@
   home.packages = with pkgs; [
     cliphist
     direnv
+    dust
     glib
     grim
     grimblast

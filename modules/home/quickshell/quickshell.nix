@@ -11,7 +11,6 @@ in
   };
   home.packages = [
     pkgs.qt6.qtwayland
+    pkgs.kdePackages.qt5compat
   ];
 }
-
-

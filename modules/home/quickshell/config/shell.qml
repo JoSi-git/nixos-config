@@ -3,15 +3,15 @@ import QtQuick
 import Quickshell
 
 ShellRoot {
-    id: rootq
+    id: rootqs
 
     Instantiator {
         model: Quickshell.screens
         
         delegate: Loader {
             active: true
-            source: "./bar/bar.qml"
-            onLoaded: item.screen = modelData
+            source: "./Bar/Bar.qml"
+            onLoaded: item.targetScreen = modelData
         }
     }
 }

@@ -73,15 +73,18 @@
     gnome-calculator      # calculator applicationk management utility
     onlyoffice-desktopeditors #
     mission-center        # system resource monitor
-    obsidian              # note-taking and knowledge management app
+    obsidian              # note-tyaking and knowledge management app
+    openconnect           # sslvpn client
     paleta                # color pallate generator
     pavucontrol           # PulseAudio volume control GUI
     pitivi                # video editor
     remmina               # remote client
     thonny                # python IDE
+    thunderbird           # e-mail client
     vscodium              # IDE
     vlc                   # media player
     discord               # temporary workaround while nixcord is broken
+    teamspeak6-client     # discord alternatives
     zenity                # gtk based message windows
   ];
 }

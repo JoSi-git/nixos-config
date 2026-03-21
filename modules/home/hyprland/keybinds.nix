@@ -39,8 +39,7 @@
         "$mainMod, equal, exec, woomer"
 
         # screenshot / ocr
-        ",Print, exec, HYPRQUICKFRAME_EDITOR=1 quickshell -c ~/.config/quickshell/HyprQuickShot -n"
-        "$mainMod, Print, exec, quickshell -c ~/.config/quickshell/HyprQuickShot -n"
+        ", Print, exec, quickshell -c ~/.config/quickshell/HyprQuickShot -n"
 
         # switch focus
         #"$mainMod, left,  movefocus, l"

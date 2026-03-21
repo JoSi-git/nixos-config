@@ -27,6 +27,8 @@
       "dialout"
       "disk"
       "audio"
+      "lp" 
+      "scanner"
     ];
     shell = pkgs.zsh;
   };

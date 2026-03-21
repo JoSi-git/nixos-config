@@ -10,6 +10,7 @@
     ./nh.nix
     ./pipewire.nix
     ./program.nix
+    ./printing.nix
     ./security.nix
     ./services.nix
     ./steam.nix

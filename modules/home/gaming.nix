@@ -4,7 +4,7 @@
     ## Utils
     gamemode
     winetricks
-    wineWowPackages.wayland
+    wineWow64Packages.wayland
     lutris
     heroic
     headsetcontrol
