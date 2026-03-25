@@ -8,7 +8,28 @@ PanelWindow {
     
     property var targetScreen 
     property bool centerVisible: false
-    
+    property bool clockHovered: false
+    property bool popoutHovered: false
+
+    function updateHoverState() {
+        if (clockHovered || popoutHovered) {
+            closeTimer.stop()
+            centerVisible = true
+        } else {
+            closeTimer.restart()
+        }
+    }
+
+    Timer {
+        id: closeTimer
+        interval: 200
+        repeat: false
+        onTriggered: qsbar.centerVisible = false
+    }
+
+    onClockHoveredChanged: updateHoverState()
+    onPopoutHoveredChanged: updateHoverState()
+
     screen: targetScreen 
     anchors {
         top: true

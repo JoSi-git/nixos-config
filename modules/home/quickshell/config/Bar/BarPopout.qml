@@ -1,13 +1,16 @@
 import QtQuick
+import QtQuick.Controls
 import Quickshell
 import ".."
+import "popouts"
 
 Rectangle {
     id: popout
     property bool isOpen: false
-    width: 450 
-    height: 280
-    
+    property string activeCategory: "Dashboard"
+
+    width: 720 
+    height: 405
     color: Style.colBg 
     radius: 12
     border.color: Style.colBorder
@@ -16,8 +19,8 @@ Rectangle {
     visible: opacity > 0
     opacity: isOpen ? 1 : 0
     Behavior on opacity { NumberAnimation { duration: 200 } }
-
-    y: isOpen ? 85 : 60
+    
+    y: isOpen ? 70 : 60
     Behavior on y { 
         NumberAnimation { 
             duration: 250
@@ -25,30 +28,43 @@ Rectangle {
         } 
     }
 
-    Text {
-        id: title
-        text: "Control Center"
-        color: Style.colWhite
-        font.pixelSize: 14
-        font.bold: true
-        anchors {
-            top: parent.top
-            topMargin: 15
-            horizontalCenter: parent.horizontalCenter
-        }
+    HoverHandler {
+        onHoveredChanged: { qsbar.popoutHovered = hovered }
     }
 
-    Rectangle {
+    Column {
         anchors.fill: parent
-        anchors.margins: 40
-        color: "transparent"
-        
-        Text {
-            anchors.centerIn: parent
-            text: "Hopp Mitenand"
-            color: Style.colWhite
-            opacity: 0.3
-            font.italic: true
+        anchors.margins: 15
+        spacing: 15
+
+        // Header Bereich (Badges)
+        PopoutHeader {
+            id: header
+            width: parent.width
+            activeTab: popout.activeCategory
+            onTabClicked: (name) => popout.activeCategory = name
+        }
+
+        // Trennlinie (optional, für sauberen Look)
+        Rectangle {
+            width: parent.width
+            height: 1
+            color: Style.colBorder
+            opacity: 0.5
+        }
+
+        // Hauptinhalt
+        Loader {
+            id: contentLoader
+            width: parent.width
+            height: parent.height - header.height - 31 // 31 = spacing + separator
+            source: "./popouts/Category" + popout.activeCategory + ".qml"
+            
+            onStatusChanged: {
+                if (status === Loader.Error) {
+                    console.warn("Could not load category: " + source)
+                }
+            }
         }
     }
 }

@@ -1,0 +1,9 @@
+module Bar.modules
+Battery 1.0 Battery.qml
+Clock 1.0 Clock.qml
+Connectivity 1.0 Connectivity.qml
+Power 1.0 Power.qml
+Privacy 1.0 Privacy.qml
+Tray 1.0 Tray.qml
+Volume 1.0 Volume.qml
+Workspaces 1.0 Workspaces.qml

@@ -1,0 +1,6 @@
+module Bar.popouts
+PopoutHeader 1.0 PopoutHeader.qml
+CategoryDashboard 1.0 CategoryDashboard.qml
+CategorySound 1.0 CategorySound.qml
+CategoryNetwork 1.0 CategoryNetwork.qml
+CategoryPerformance 1.0 CategoryPerformance.qml

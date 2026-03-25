@@ -6,6 +6,7 @@ QtObject {
     readonly property color colBg02: "#242B34"
     readonly property color colBorder: "#C0C0C0"
     readonly property color colBorder02: "#3c3836"
+    readonly property color colHighlight: "#455263"
     readonly property color colWhite: "#FFFFFF"
     readonly property color colRed: "#CC241D"
     readonly property color colGreen: "#32CD32"
