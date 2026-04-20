@@ -97,6 +97,18 @@ PanelWindow {
                 source: "BarContent.qml"
             }
         }
+        
+        NatureOverlay {
+            anchors.left:  barContainer.left
+            anchors.right: barContainer.right
+            anchors.top:   barMainContent.top
+            barHeight:     35
+            headroomTop:   25
+            headroomBot:   3
+            uptimeSeconds: UptimeTracker.uptimeSeconds
+            seed:          7331
+            z:             99
+        }
     }
 
     BarPopout {

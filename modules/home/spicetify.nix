@@ -9,7 +9,6 @@ in {
 
     enabledExtensions = with spicePkgs.extensions; [
       playlistIcons
-      lastfm
       historyShortcut
       fullAppDisplay
       keyboardShortcut

@@ -12,7 +12,7 @@
     imagemagick
     libnotify
     satty
-    swww
+    awww
     slurp
     tesseract
     wayland

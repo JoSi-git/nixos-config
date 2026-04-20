@@ -14,6 +14,7 @@
     ./packages.nix                 # other packages    
     ./quickshell                   # replacement for waybar
     ./rofi                         # launcher
+    ./sbb-tui.nix                  # sbb tui app
     ./scripts/scripts.nix          # personal scripts
     ./spicetify.nix                # custom spotify client
     ./stylix.nix                   # nixos alternative to classic gtk theming

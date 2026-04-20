@@ -64,7 +64,8 @@
 
         /* ---- PREFERENCES ---- */
         # Check about:config for options.
-        Preferences = { 
+        Preferences = {
+          "browser.fullscreen.autohide" = lock-false;
           "toolkit.legacyUserProfileCustomizations.stylesheets" = lock-true;
           "browser.contentblocking.category" = { Value = "strict"; Status = "locked"; };
           "extensions.pocket.enabled" = lock-false;

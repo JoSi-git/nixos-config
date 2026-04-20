@@ -18,4 +18,16 @@ QtObject {
     readonly property color colOrange: "#FE8019"
     readonly property color bgCloud: "#b93131"
     readonly property color colGray: "#3c3836"
+    
+    readonly property color natMossDeep:   "#1a3d28"
+    readonly property color natMossLight:  "#2a5a3a"
+    readonly property color natMushroomA:  "#3a6a4a"
+    readonly property color natMushroomB:  "#4a5a3a"
+    readonly property color natStem:       "#3a4535"
+    readonly property color natVine:       "#265a30"
+    readonly property color natMushroomRed:   "#8a2a1a"
+    readonly property color natMushroomCap:   "#c43a1a"
+    readonly property color natMushroomSpot:  "#e8d5b0"
+    readonly property color natMushroomBrown: "#6a3a1a"
+    readonly property color natMushroomTan:   "#8a5a2a"
 }

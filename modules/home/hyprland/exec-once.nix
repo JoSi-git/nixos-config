@@ -7,7 +7,7 @@
       "dbus-update-activation-environment --systemd --all"
       "systemctl --user import-environment --all"
 
-      "swww-daemon &"
+      "awww-daemon &"
       "hyprlock"
       "battery_check &"
       "wl-clip-persist --clipboard both &"

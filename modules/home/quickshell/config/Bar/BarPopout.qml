@@ -37,7 +37,6 @@ Rectangle {
         anchors.margins: 15
         spacing: 15
 
-        // Header Bereich (Badges)
         PopoutHeader {
             id: header
             width: parent.width
@@ -45,7 +44,6 @@ Rectangle {
             onTabClicked: (name) => popout.activeCategory = name
         }
 
-        // Trennlinie (optional, für sauberen Look)
         Rectangle {
             width: parent.width
             height: 1
@@ -53,11 +51,10 @@ Rectangle {
             opacity: 0.5
         }
 
-        // Hauptinhalt
         Loader {
             id: contentLoader
             width: parent.width
-            height: parent.height - header.height - 31 // 31 = spacing + separator
+            height: parent.height - header.height - 31
             source: "./popouts/Category" + popout.activeCategory + ".qml"
             
             onStatusChanged: {
