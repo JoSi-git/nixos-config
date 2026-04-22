@@ -1,2 +1,5 @@
 *.env
 */.old
+
+# Assets downloaded locally via install.sh
+frog-snail.gif

@@ -32,6 +32,14 @@ Item {
         mossDeep:     Style.natMossDeep
         mossLight:    Style.natMossLight
     }
+    
+    // snail: first crossing 30–60 min after start, then every 30–60 min
+    SnailCrawler {
+        z:      0
+        barTop: root.headroomTop
+        width:  root.width
+        height: root.implicitHeight
+    }
 
     // brown mushroom: starts at 1 hr
     Image {

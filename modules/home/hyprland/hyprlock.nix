@@ -83,8 +83,8 @@ in
     monitor = eDP-1
     size = 250, 45
     outline_thickness = 1
-    dots_size = 0.1
-    dots_spacing = 0.1
+    dots_size = 0.22
+    dots_spacing = 0.06
     dots_center = true
     dots_text_format = <span> </span>
     outer_color = rgba(0, 0, 0, 0)

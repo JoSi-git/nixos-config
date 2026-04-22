@@ -87,6 +87,63 @@ get_host() {
     confirm
 }
 
+download_assets() {
+    # Format: "URL|filename"
+    local -a ASSETS=(
+        "https://media.tenor.com/V4A7awXmANMAAAAj/frog-snail.gif|frog-snail.gif"
+    )
+
+    local ASSETS_DIR="./modules/home/quickshell/config/Bar/assets"
+
+    echo -e "\n${YELLOW}DOWNLOADING ASSETS${NORMAL}\n"
+    
+    echo -e "${CYAN}┌─────────────────────────────────────────────────────────────┐${NORMAL}"
+    echo -e "${CYAN}│${NORMAL}                     IMPORTANT NOTICE                        ${CYAN}│${NORMAL}"
+    echo -e "${CYAN}├─────────────────────────────────────────────────────────────┤${NORMAL}"
+    echo -e "${CYAN}│${NORMAL}  This script will download images and GIFs from their       ${CYAN}│${NORMAL}"
+    echo -e "${CYAN}│${NORMAL}  original sources directly to your local machine.           ${CYAN}│${NORMAL}"
+    echo -e "${CYAN}│${NORMAL}                                                             ${CYAN}│${NORMAL}"
+    echo -e "${CYAN}│${NORMAL}  These assets are NOT included in this repository           ${CYAN}│${NORMAL}"
+    echo -e "${CYAN}│${NORMAL}  to avoid distributing potentially copyrighted material.    ${CYAN}│${NORMAL}"
+    echo -e "${CYAN}│${NORMAL}                                                             ${CYAN}│${NORMAL}"
+    echo -e "${CYAN}│${NORMAL}  Downloads are intended for private use only.               ${CYAN}│${NORMAL}"
+    echo -e "${CYAN}│${NORMAL}  By continuing, you confirm that:                           ${CYAN}│${NORMAL}"
+    echo -e "${CYAN}│${NORMAL}   ✓ You will use these assets for personal use only         ${CYAN}│${NORMAL}"
+    echo -e "${CYAN}│${NORMAL}   ✓ You understand the author takes no responsibility       ${CYAN}│${NORMAL}"
+    echo -e "${CYAN}│${NORMAL}     for any copyright issues in your jurisdiction           ${CYAN}│${NORMAL}"
+    echo -e "${CYAN}└─────────────────────────────────────────────────────────────┘${NORMAL}"
+    echo
+    echo -e "  ${MAGENTA}A special thanks to all the original artists and creators${NORMAL}"
+    echo -e "  ${MAGENTA}whose work makes this setup a little more alive. ${NORMAL}"
+    echo
+    echo -en "Do you want to download the assets? "
+    confirm
+
+    mkdir -p "${ASSETS_DIR}"
+    echo -e "\n${BLUE}Downloading assets...${NORMAL}\n"
+
+    local success=0
+    local failed=0
+
+    for entry in "${ASSETS[@]}"; do
+        local url="${entry%%|*}"
+        local filename="${entry##*|}"
+
+        echo -en "  Downloading ${MAGENTA}${filename}${NORMAL}... "
+        if curl -fsSL "${url}" -o "${ASSETS_DIR}/${filename}"; then
+            echo -e "${GREEN}✓${NORMAL}"
+            ((success++))
+        else
+            echo -e "${RED}✗ Failed${NORMAL}"
+            ((failed++))
+        fi
+    done
+
+    echo
+    echo -e "  ${GREEN}✓ ${success} downloaded${NORMAL}, ${RED}✗ ${failed} failed${NORMAL}"
+    echo -e "\n${GREEN}Done.${NORMAL}\n"
+}
+
 install() {
     echo -e "\n${RED}START INSTALL PHASE${NORMAL}\n"
 
@@ -107,24 +164,24 @@ install() {
     cp -r wallpapers/others/* ~/Pictures/wallpapers/others/
 
     # User Information
-    echo 
-    echo -e "${MAGENTA}------------------------------------------------------------------${NORMAL}"
-    echo -e "${MAGENTA}POST-INSTALLATION & CONFIGURATION NOTES${NORMAL}"
-    echo -e ""
-    echo -e "${YELLOW}1. Hardware Configuration:${NORMAL}"
-    echo -e "Extended hardware configuration has been automatically deactivated."
-    echo -e "To add extra drives or hardware components, check the file hardware.nix uncomment the line in:"
-    echo -e "-> ${CYAN}./modules/core/default.nix${NORMAL}"
-    echo -e ""
-    echo -e "${YELLOW}2. rEFInd Theme (Manual Step):${NORMAL}"
-    echo -e "If you want to use the custom rEFInd theme, run this command post Install:"
-    echo -e "-> ${CYAN}sudo cp -r /home/${username}/nixos-config/wallpapers/refind/themes /boot/EFI/refind/${NORMAL}"
-    echo -e ""
-    echo -e "${MAGENTA}------------------------------------------------------------------${NORMAL}\n"
+    echo
+    echo -e "${MAGENTA}┌─────────────────────────────────────────────────────────────┐${NORMAL}"
+    echo -e "${MAGENTA}│${NORMAL}            POST-INSTALLATION & CONFIGURATION NOTES          ${MAGENTA}│${NORMAL}"
+    echo -e "${MAGENTA}├─────────────────────────────────────────────────────────────┤${NORMAL}"
+    echo -e "${MAGENTA}│${NORMAL}  1. Hardware Configuration:                                 ${MAGENTA}│${NORMAL}"
+    echo -e "${MAGENTA}│${NORMAL}  Extended hardware configuration has been deactivated.      ${MAGENTA}│${NORMAL}"
+    echo -e "${MAGENTA}│${NORMAL}  To add extra drives or hardware components, uncomment:     ${MAGENTA}│${NORMAL}"
+    echo -e "${MAGENTA}│${NORMAL}  -> ./modules/core/default.nix                              ${MAGENTA}│${NORMAL}"
+    echo -e "${MAGENTA}│${NORMAL}                                                             ${MAGENTA}│${NORMAL}"
+    echo -e "${MAGENTA}│${NORMAL}  2. rEFInd Theme (Manual Step):                             ${MAGENTA}│${NORMAL}"
+    echo -e "${MAGENTA}│${NORMAL}  If you want the custom rEFInd theme, run post-install:     ${MAGENTA}│${NORMAL}"
+    echo -e "${MAGENTA}│${NORMAL}  -> sudo cp -r ~/nixos-config/wallpapers/refind/themes      ${MAGENTA}│${NORMAL}"
+    echo -e "${MAGENTA}│${NORMAL}     /boot/EFI/refind/                                       ${MAGENTA}│${NORMAL}"
+    echo -e "${MAGENTA}└─────────────────────────────────────────────────────────────┘${NORMAL}"
+    echo
 
     # Deactivate hardware.nix in the core modules
     sed -i 's|./hardware.nix|# ./hardware.nix|' ./modules/core/default.nix
-
 
     # Last Confirmation
     echo -en "You are about to start the system build, do you want to process ? "
@@ -138,6 +195,7 @@ install() {
 main() {
     init
     print_header
+    download_assets
     get_username
     set_username
     get_host

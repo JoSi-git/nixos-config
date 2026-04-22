@@ -3,14 +3,12 @@ import QtQuick.Controls
 import Quickshell
 import ".."
 import "popouts"
-
 Rectangle {
     id: popout
     property bool isOpen: false
     property string activeCategory: "Dashboard"
-
-    width: 720 
-    height: 405
+    width: 900
+    height: 506
     color: Style.colBg 
     radius: 12
     border.color: Style.colBorder
@@ -27,30 +25,25 @@ Rectangle {
             easing.type: Easing.OutCubic 
         } 
     }
-
     HoverHandler {
         onHoveredChanged: { qsbar.popoutHovered = hovered }
     }
-
     Column {
         anchors.fill: parent
         anchors.margins: 15
         spacing: 15
-
         PopoutHeader {
             id: header
             width: parent.width
             activeTab: popout.activeCategory
             onTabClicked: (name) => popout.activeCategory = name
         }
-
         Rectangle {
             width: parent.width
             height: 1
             color: Style.colBorder
             opacity: 0.5
         }
-
         Loader {
             id: contentLoader
             width: parent.width
