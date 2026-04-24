@@ -1,0 +1,3 @@
+module Bar.services
+singleton UptimeTracker 1.0 UptimeTracker.qml
+NotifPopup 1.0 NotifPopup.qml

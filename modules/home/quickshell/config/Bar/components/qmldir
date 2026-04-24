@@ -1,0 +1,5 @@
+module Bar.components
+HexPanel 1.0 HexPanel.qml
+HexShape 1.0 HexShape.qml
+MossRenderer 1.0 MossRenderer.qml
+SnailCrawler 1.0 SnailCrawler.qml

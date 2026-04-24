@@ -1,6 +1,8 @@
 import QtQuick
 import QtQuick.Layouts
+import Quickshell.Widgets
 import "../.."
+import "Dashboard"
 
 Item {
     id: root
@@ -22,12 +24,35 @@ Item {
                 Layout.preferredHeight: 200
                 color: Style.colBg02
                 radius: 8
+                DashboardProfile {}
             }
+
             Rectangle {
+                id: badgesRect
                 Layout.fillWidth: true
                 Layout.fillHeight: true
                 color: Style.colBg02
                 radius: 8
+                clip: true
+
+                DashboardBadges {}
+
+                ClippingWrapperRectangle {
+                    anchors.bottom: parent.bottom
+                    anchors.left: parent.left
+                    color: "transparent"
+                    width: 130
+                    height: 130
+                    radius: 8
+
+                    Image {
+                        source: "../assets/basalt01.png"
+                        anchors.fill: parent
+                        fillMode: Image.PreserveAspectFit
+                        verticalAlignment: Image.AlignBottom
+                        horizontalAlignment: Image.AlignLeft
+                    }
+                }
             }
         }
 
@@ -43,12 +68,17 @@ Item {
                 Layout.preferredHeight: 163
                 color: Style.colBg02
                 radius: 8
+
+                DashboardPlayer {}
             }
+
             Rectangle {
                 Layout.fillWidth: true
                 Layout.fillHeight: true
                 color: Style.colBg02
                 radius: 8
+
+                DashboardCalender {}
             }
         }
 
@@ -59,6 +89,25 @@ Item {
             Layout.fillHeight: true
             color: Style.colBg02
             radius: 8
+            clip: true
+
+            DashboardNotification {}
+
+            ClippingWrapperRectangle {
+                anchors.bottom: parent.bottom
+                anchors.right: parent.right
+                color: "transparent"
+                width: 140
+                height: 140
+                radius: 8
+
+                Image {
+                    source: "../assets/basalt02.png"
+                    anchors.fill: parent
+                    fillMode: Image.PreserveAspectCrop
+                    
+                }
+            }
         }
     }
 }

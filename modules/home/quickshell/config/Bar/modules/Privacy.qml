@@ -1,6 +1,6 @@
 import QtQuick
 import Quickshell.Io
-import ".."
+import "../components"
 import "../.."
 
 HexPanel {
@@ -9,6 +9,8 @@ HexPanel {
 
     Row {
         id: privacyDotsRow
+        leftPadding: 1
+        rightPadding: 1
         property string rawText: ""
 
         Process {
@@ -18,7 +20,8 @@ HexPanel {
             stdout: StdioCollector { 
                 onStreamFinished: {
                     try {
-                        privacyDotsRow.rawText = JSON.parse(this.text).text
+                        let raw = JSON.parse(this.text).text
+                        privacyDotsRow.rawText = raw.replace(/foreground/g, "color").replace(/span/g, "font")
                     } catch(e) {}
                 }
             }
@@ -34,7 +37,7 @@ HexPanel {
 
         Text {
             textFormat: Text.StyledText
-            text: privacyDotsRow.rawText.replace(/foreground/g, "color").replace(/span/g, "font")
+            text: privacyDotsRow.rawText
             font.bold: true
         }
     }

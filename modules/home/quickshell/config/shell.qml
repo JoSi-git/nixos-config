@@ -2,11 +2,11 @@
 import QtQuick
 import Quickshell
 import Quickshell.Services.Notifications
-import "Bar/notifications" 
+import "Bar/services"
 
 ShellRoot {
     id: rootqs
-    
+
     NotificationServer {
         keepOnReload: false
         onNotification: notif => {
@@ -17,13 +17,13 @@ ShellRoot {
 
     Instantiator {
         model: Quickshell.screens
-        
+
         delegate: Loader {
             active: true
             source: "./Bar/Bar.qml"
             onLoaded: item.targetScreen = modelData
         }
     }
-    
+
     NotifPopup { id: notifPopup }
 }

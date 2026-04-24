@@ -1,5 +1,6 @@
 import QtQuick
-import "assets/nature"
+import "components"
+import ".."
 
 Item {
     id: root

@@ -1,4 +1,0 @@
-MossRenderer 1.0 MossRenderer.qml
-SnailCrawler 1.0 SnailCrawler.qml
-singleton Style 1.0 ../../../style.qml
-singleton UptimeTracker 1.0 ../../UptimeTracker.qml

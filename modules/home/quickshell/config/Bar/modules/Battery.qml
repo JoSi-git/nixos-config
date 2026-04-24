@@ -1,6 +1,6 @@
 import QtQuick
 import Quickshell.Services.UPower
-import ".."
+import "../components"
 import "../.."
 
 HexPanel {

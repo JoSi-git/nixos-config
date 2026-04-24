@@ -1,7 +1,7 @@
 import QtQuick
 import Quickshell
 import Quickshell.Io
-import ".."
+import "../components"
 import "../.."
 
 HexPanel {
@@ -13,71 +13,52 @@ HexPanel {
     property bool btConnected:    false
 
     Process {
-        id: ethProc
-        command: ["bash", "-c", "ip link show | grep -E '^[0-9]+: e[nt]' | grep -c 'state UP'"]
-        running: false
-        stdout: StdioCollector {
-            onStreamFinished: {
-                ethernetActive = (text.trim() !== "0" && text.trim() !== "")
-            }
-        }
-    }
-
-    Process {
-        id: wifiProc
+        id: statusProc
         command: ["bash", "-c", `
+            eth=$(ip link show | grep -E '^[0-9]+: e[nt]' | grep -c 'state UP')
+            echo "ETH:$eth"
             station=$(iwctl station list 2>/dev/null \
                 | sed 's/\x1b\[[0-9;]*m//g' \
                 | awk '/connected/{print $1; exit}')
             if [ -z "$station" ]; then
-                echo 'none'
+                echo "WIFI:none"
             else
                 rssi=$(iwctl station "$station" show 2>/dev/null \
                     | sed 's/\x1b\[[0-9;]*m//g' \
                     | grep 'RSSI' | grep -v 'Average' \
                     | grep -oP '[-]?[0-9]+(?= dBm)')
-                [ -z "$rssi" ] && echo 'none' || echo "$rssi"
+                echo "WIFI:\${rssi:-none}"
             fi
+            echo "BTPOWERED:$(bluetoothctl show 2>/dev/null | grep 'Powered' | grep -c 'yes')"
+            echo "BTCONNECTED:$(bluetoothctl info 2>/dev/null | grep -E '^	Connected: yes' | grep -c 'yes')"
         `]
         running: false
         stdout: StdioCollector {
             onStreamFinished: {
-                var line = text.trim()
-                if (line === "none" || line === "") {
-                    wifiConnected = false
-                    wifiStrength  = -1
-                    return
-                }
-                var dbm = parseFloat(line)
-                if (isNaN(dbm)) {
-                    wifiConnected = false
-                    wifiStrength  = -1
-                    return
-                }
-                wifiConnected = true
-                if (dbm <= -100)     wifiStrength = 0
-                else if (dbm >= -50) wifiStrength = 100
-                else                 wifiStrength = Math.round((dbm + 100) * 2)
-            }
-        }
-    }
-
-    Process {
-        id: btProc
-        command: ["bash", "-c", `
-            echo "POWERED:$(bluetoothctl show 2>/dev/null | grep 'Powered' | grep -c 'yes')"
-            echo "CONNECTED:$(bluetoothctl info 2>/dev/null | grep -E '^	Connected: yes' | grep -c 'yes')"
-        `]
-        running: false
-        stdout: StdioCollector {
-            onStreamFinished: {
-                var lines = text.split("\n")
-                btPowered   = false
-                btConnected = false
+                var lines = text.trim().split("\n")
                 for (var i = 0; i < lines.length; i++) {
-                    var l = lines[i].trim()
-                    if (l === "POWERED:1")   btPowered   = true
-                    if (l === "CONNECTED:1") btConnected = true
+                    var parts = lines[i].split(":")
+                    var key = parts[0], val = parts[1]
+                    if (key === "ETH") {
+                        ethernetActive = (val !== "0" && val !== "")
+                    } else if (key === "WIFI") {
+                        if (val === "none" || val === "") {
+                            wifiConnected = false; wifiStrength = -1
+                        } else {
+                            var dbm = parseFloat(val)
+                            if (isNaN(dbm)) { wifiConnected = false; wifiStrength = -1 }
+                            else {
+                                wifiConnected = true
+                                if (dbm <= -100)     wifiStrength = 0
+                                else if (dbm >= -50) wifiStrength = 100
+                                else                 wifiStrength = Math.round((dbm + 100) * 2)
+                            }
+                        }
+                    } else if (key === "BTPOWERED") {
+                        btPowered = (val === "1")
+                    } else if (key === "BTCONNECTED") {
+                        btConnected = (val === "1")
+                    }
                 }
             }
         }
@@ -89,9 +70,7 @@ HexPanel {
         repeat:   true
         triggeredOnStart: true
         onTriggered: {
-            ethProc.running  = false; ethProc.running  = true
-            wifiProc.running = false; wifiProc.running = true
-            btProc.running   = false; btProc.running   = true
+            statusProc.running = false; statusProc.running = true
         }
     }
 

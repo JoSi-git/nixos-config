@@ -1,6 +1,6 @@
 import QtQuick
 import Quickshell.Hyprland
-import ".."
+import "../components"
 import "../.."
 
 HexPanel {

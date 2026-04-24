@@ -8,7 +8,7 @@ Item {
 
     AnimatedImage {
         id: snailImg
-        source: "../frog-snail.gif"
+        source: "../assets/frog-snail.gif"
         width:  48
         height: 28
         x:      -48
@@ -59,7 +59,6 @@ Item {
         PauseAnimation  { duration: 810 }
     }
 
-    // first crossing starts 30–60 min after shell loads, then every 30–60 min
     Timer {
         id: pauseTimer
         repeat: false
