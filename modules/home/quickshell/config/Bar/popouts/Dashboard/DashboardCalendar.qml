@@ -1,6 +1,5 @@
 import QtQuick
 import QtQuick.Layouts
-import QtQuick.Shapes
 import Quickshell.Io
 import "../../components"
 import "../../.."
@@ -14,40 +13,33 @@ Item {
         property string label: "›"
         signal clicked()
 
-        width: 28; height: 24
+        width: 34; height: 30
 
         HoverHandler { id: navHover }
         TapHandler   { onTapped: navBtn.clicked() }
 
-        layer.enabled: true
-        layer.samples: 8
-
-        Shape {
+        HexShape {
             anchors.fill: parent
-            antialiasing: true
-            ShapePath {
-                fillColor:   navHover.hovered ? Qt.lighter(Style.colBg03, 1.6) : Style.colBg03
-                strokeColor: navHover.hovered ? Style.colYellow : Qt.darker(Style.colYellow, 1.8)
-                strokeWidth: 1.2
-                startX: 7;  startY: 1
-                PathLine { x: 21; y: 1  }
-                PathLine { x: 27; y: 12 }
-                PathLine { x: 21; y: 23 }
-                PathLine { x: 7;  y: 23 }
-                PathLine { x: 1;  y: 12 }
-                PathLine { x: 7;  y: 1  }
-            }
+            filled:      true
+            fillColor:   navHover.hovered
+                         ? Qt.darker(Style.colYellow, 1.4)
+                         : "transparent"
+            strokeColor: Style.colYellow
+            strokeWidth: 1.5
+            padding:     2
+            Behavior on fillColor   { ColorAnimation { duration: 120 } }
+            Behavior on strokeColor { ColorAnimation { duration: 120 } }
         }
 
         Text {
             anchors.centerIn: parent
-            anchors.verticalCenterOffset: -1
+            anchors.verticalCenterOffset: 1
             text: navBtn.label
-            color: navHover.hovered ? Style.colYellow : Qt.darker(Style.colYellow, 1.4)
-            font.pixelSize: 17
+            color: navHover.hovered ? Style.colWhite : Style.colYellow
+            font.pixelSize: 20
             font.family: "Courier New"
             font.bold: true
-            Behavior on color { ColorAnimation { duration: 150 } }
+            Behavior on color { ColorAnimation { duration: 120 } }
         }
     }
 
@@ -72,12 +64,11 @@ Item {
     readonly property int todayWeekIndex: getTodayWeekIndex(calCells)
 
     function buildCells() {
-        let cells      = []
-        let firstDow   = new Date(curYear, curMonth, 1).getDay()
-        let startDow   = firstDow === 0 ? 6 : firstDow - 1
+        let cells       = []
+        let firstDow    = new Date(curYear, curMonth, 1).getDay()
+        let startDow    = firstDow === 0 ? 6 : firstDow - 1
         let daysInMonth = new Date(curYear, curMonth + 1, 0).getDate()
-        let prevStart  = new Date(curYear, curMonth, 0).getDate() - startDow + 1
-
+        let prevStart   = new Date(curYear, curMonth, 0).getDate() - startDow + 1
         for (let i = 0; i < startDow; i++)
             cells.push({ d: prevStart + i, type: "prev" })
         for (let d = 1; d <= daysInMonth; d++)
@@ -125,38 +116,15 @@ Item {
 
             Item { Layout.fillWidth: true }
 
-            RowLayout {
-                spacing: 10
+            Text {
+                text: root.monthNames[root.curMonth] + "   " + root.curYear
+                color: Style.colYellow
+                font.pixelSize: 16
+                font.bold: true
+                font.family: "Courier New"
+                font.letterSpacing: 2
                 Layout.alignment: Qt.AlignVCenter
-
-                HexShape {
-                    width: 10; height: 10
-                    Layout.alignment: Qt.AlignVCenter
-                    filled:      false
-                    strokeColor: Qt.darker(Style.colYellow, 1.6)
-                    strokeWidth: 1.0
-                    padding:     1.0
-                }
-
-                Text {
-                    text: root.monthNames[root.curMonth] + "   " + root.curYear
-                    color: Style.colYellow
-                    font.pixelSize: 16
-                    font.bold: true
-                    font.family: "Courier New"
-                    font.letterSpacing: 2
-                    Layout.alignment: Qt.AlignVCenter
-                    TapHandler { onTapped: root.goToToday() }
-                }
-
-                HexShape {
-                    width: 10; height: 10
-                    Layout.alignment: Qt.AlignVCenter
-                    filled:      false
-                    strokeColor: Qt.darker(Style.colYellow, 1.6)
-                    strokeWidth: 1.0
-                    padding:     1.0
-                }
+                TapHandler { onTapped: root.goToToday() }
             }
 
             Item { Layout.fillWidth: true }
@@ -212,23 +180,13 @@ Item {
                                 Layout.fillWidth: true
                                 Layout.fillHeight: true
 
-                                property var cell:       root.calCells[dayCell.index + weekRow.index * 7]
-                                property bool isToday:   cell.type === "cur"
+                                property var cell:        root.calCells[dayCell.index + weekRow.index * 7]
+                                property bool isToday:    cell.type === "cur"
                                     && root.curYear  === root.todayDate.getFullYear()
                                     && root.curMonth === root.todayDate.getMonth()
                                     && cell.d === root.todayDate.getDate()
                                 property bool isOther:    cell.type !== "cur"
                                 property bool isSelected: !isToday && cell.type === "cur" && cell.d === root.selectedDay
-
-                                HexShape {
-                                    anchors.fill: parent
-                                    visible:     dayCell.isToday
-                                    filled:      true
-                                    fillColor:   "#1c1500"
-                                    strokeColor: Style.colYellow
-                                    strokeWidth: 1.8
-                                    padding:     2.0
-                                }
 
                                 HoverHandler { id: dayHover }
 
@@ -250,6 +208,7 @@ Item {
 
                                 Text {
                                     anchors.centerIn: parent
+                                    anchors.verticalCenterOffset: -1
                                     text: dayCell.cell.d
                                     font.pixelSize: 14
                                     font.family: "Courier New"

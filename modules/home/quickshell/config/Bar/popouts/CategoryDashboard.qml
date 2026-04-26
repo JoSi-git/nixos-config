@@ -78,7 +78,7 @@ Item {
                 color: Style.colBg02
                 radius: 8
 
-                DashboardCalender {}
+                DashboardCalendar {}
             }
         }
 

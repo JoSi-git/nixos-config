@@ -14,6 +14,7 @@
     firefox = {
       enable = true;
       languagePacks = [ "de" "en-US" ];
+      configPath = ".mozilla/firefox";
       
       profiles = {
           josi = {

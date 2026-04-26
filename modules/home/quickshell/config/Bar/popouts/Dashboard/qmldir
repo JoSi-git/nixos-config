@@ -1,6 +1,6 @@
 module Bar.popouts.Dashboard
 DashboardProfile 1.0 DashboardProfile.qml
 DashboardBadges 1.0 DashboardBadges.qml
-DashboardCalender 1.0 DashboardCalender.qml
+DashboardCalendar 1.0 DashboardCalendar.qml
 DashboardPlayer 1.0 DashboardPlayer.qml
 DashboardNotification 1.0 DashboardNotification.qml
