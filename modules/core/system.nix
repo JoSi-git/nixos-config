@@ -1,4 +1,5 @@
-{ self, pkgs, lib, inputs, ... }: {
+{ pkgs, ... }:
+{
   nix = {
     settings = {
       auto-optimise-store = true;
@@ -17,10 +18,7 @@
     };
   };
 
-  environment.systemPackages = with pkgs; [
-    wget
-    git
-  ];
+  powerManagement.cpuFreqGovernor = "performance";
 
   time.timeZone = "Europe/Paris";
   i18n.defaultLocale = "de_CH.UTF-8";

@@ -1,0 +1,3 @@
+module Bar.eastereggs
+singleton EasterEggState 1.0 EasterEggState.qml
+ActivateLinux 1.0 ActivateLinux.qml

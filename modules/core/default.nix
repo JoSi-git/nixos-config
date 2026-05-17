@@ -1,4 +1,5 @@
-{inputs, pkgs, username, self, host, ...}: {
+{ inputs, pkgs, username, self, host, ... }:
+{
   imports = [
     ./better-control.nix   
     ./bootloader.nix

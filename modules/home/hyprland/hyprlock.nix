@@ -54,7 +54,7 @@ in
   # Day-Date-Month
   label {
     monitor = eDP-1
-    text = cmd[update:1000] echo "<span color='##ffffff99'>$(date '+%A, ')</span><span color='##ffb90099'>$(date '+%d %B')</span>"
+    text = cmd[update:1000] echo "<span color='#ffffff99'>$(date '+%A, ')</span><span color='#ffb90099'>$(date '+%d %B')</span>"
     font_size = 25
     font_family = Inter
     position = 0, -80
@@ -91,7 +91,7 @@ in
     inner_color = rgba(255, 255, 255, 0.1)
     font_color = rgb(200, 200, 200)
     fade_on_empty = false
-    font_family = JetBrainsMono Nerd Font = <i><span foreground="##ffffff99"> 󰌾 Enter Pass</span></i>
+    font_family = JetBrainsMono Nerd Font = <i><span foreground="#ffffff99"> 󰌾 Enter Pass</span></i>
     hide_input = false
     position = 0, -360
     halign = center

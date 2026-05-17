@@ -1,4 +1,4 @@
-{ pkgs, lib, username, ... }:
+{ pkgs, ... }:
 
 {
   virtualisation.docker.enable = true;

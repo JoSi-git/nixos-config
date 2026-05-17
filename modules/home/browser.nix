@@ -18,6 +18,7 @@
       
       profiles = {
           josi = {
+            extensions.force = true;
           };
         };
 
@@ -45,7 +46,11 @@
         # Valid strings for installation_mode are "allowed", "blocked",
         # "force_installed" and "normal_installed".
         ExtensionSettings = {
-          "*".installation_mode = "blocked"; # blocks all addons except the ones specified below
+          # Firefox Color (Stylix theme)
+          "FirefoxColor@mozilla.com" = {
+            install_url = "https://addons.mozilla.org/firefox/downloads/file/3643624/latest.xpi";
+            installation_mode = "normal_installed";
+          };
           # uBlock Origin:
           "uBlock0@raymondhill.net" = {
             install_url = "https://addons.mozilla.org/firefox/downloads/latest/ublock-origin/latest.xpi";
@@ -90,8 +95,10 @@
       };
     };
     
-    chromium = {
-      enable = true;
-    };
    };
+
+  home.packages = with pkgs; [
+    vivaldi
+    vivaldi-ffmpeg-codecs
+  ];
  }

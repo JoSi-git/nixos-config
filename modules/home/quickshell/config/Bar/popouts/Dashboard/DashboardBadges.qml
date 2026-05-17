@@ -2,6 +2,7 @@ import QtQuick
 import QtQuick.Layouts
 import Quickshell.Io
 import "../../.."
+import "../../eastereggs"
 
 Item {
     id: root
@@ -13,30 +14,39 @@ Item {
     property string nixPkgs:       ""
     property string uptime:        ""
 
+    property int kernelClickCount: 0
+
+    Timer {
+        id: kernelClickTimer
+        interval: 1500
+        repeat: false
+        onTriggered: root.kernelClickCount = 0
+    }
+
     Process {
         command: ["bash", "-c",
-            "f=/tmp/qs_nixVersion; [ -f \"$f\" ] && cat \"$f\" || " +
+            "f=$XDG_RUNTIME_DIR/qs_nixVersion; [ -f \"$f\" ] && cat \"$f\" || " +
             "(grep ^VERSION_ID /etc/os-release | cut -d= -f2 | tr -d '\"' | tee \"$f\")"]
         running: true
         stdout: StdioCollector { onStreamFinished: root.nixVersion = text.trim() }
     }
     Process {
         command: ["bash", "-c",
-            "f=/tmp/qs_hlVersion; [ -f \"$f\" ] && cat \"$f\" || " +
+            "f=$XDG_RUNTIME_DIR/qs_hlVersion; [ -f \"$f\" ] && cat \"$f\" || " +
             "(hyprctl version 2>/dev/null | head -1 | awk '{print $2}' | tee \"$f\")"]
         running: true
         stdout: StdioCollector { onStreamFinished: root.hlVersion = text.trim() }
     }
     Process {
         command: ["bash", "-c",
-            "f=/tmp/qs_kernelVersion; [ -f \"$f\" ] && cat \"$f\" || " +
+            "f=$XDG_RUNTIME_DIR/qs_kernelVersion; [ -f \"$f\" ] && cat \"$f\" || " +
             "(uname -r | cut -d- -f1 | tee \"$f\")"]
         running: true
         stdout: StdioCollector { onStreamFinished: root.kernelVersion = text.trim() }
     }
     Process {
         command: ["bash", "-c",
-            "f=/tmp/qs_nixPkgs; [ -f \"$f\" ] && cat \"$f\" || " +
+            "f=$XDG_RUNTIME_DIR/qs_nixPkgs; [ -f \"$f\" ] && cat \"$f\" || " +
             "(nix-store -qR /run/current-system 2>/dev/null | wc -l | tee \"$f\")"]
         running: true
         stdout: StdioCollector { onStreamFinished: root.nixPkgs = text.trim() }
@@ -109,6 +119,20 @@ Item {
                         font.pixelSize: 13
                         font.weight: Font.Medium
                         font.letterSpacing: 0.5
+                    }
+                }
+
+                MouseArea {
+                    anchors.fill: parent
+                    enabled: index === 2
+                    acceptedButtons: Qt.LeftButton | Qt.RightButton
+                    onClicked: {
+                        root.kernelClickCount++
+                        kernelClickTimer.restart()
+                        if (root.kernelClickCount >= 3) {
+                            EasterEggState.activateLinux = !EasterEggState.activateLinux
+                            root.kernelClickCount = 0
+                        }
                     }
                 }
             }

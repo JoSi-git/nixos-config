@@ -1,8 +1,9 @@
-{ pkgs, config, lib, ... }:{
+{ lib, ... }:
+{
   
   imports = [
     ./hardware-configuration.nix
-    ./../../modules/core
+    ../../modules/core
   ];
 
   # kvm/qemu doesn't use UEFI firmware mode by default.

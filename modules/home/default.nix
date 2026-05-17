@@ -1,4 +1,5 @@
-{inputs, username, host, ...}: {
+{ inputs, username, host, ... }:
+{
   imports = [
     inputs.stylix.homeModules.default
     ./browser.nix                  # configuration for all browsers
@@ -8,9 +9,7 @@
     ./gtk.nix                      # gtk theme
     ./hyprland                     # window manager
     ./kitty.nix                    # terminal
-#   ./modrinth.nix                # minecraft game launcher
     ./nemo.nix                     # file manager
-#   ./nixcord.nix
     ./packages.nix                 # other packages    
     ./quickshell                   # replacement for waybar
     ./rofi                         # launcher

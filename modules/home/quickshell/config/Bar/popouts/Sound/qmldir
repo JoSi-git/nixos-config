@@ -1,0 +1,7 @@
+module Bar.popouts.Sound
+SoundOutputDevice 1.0 SoundOutputDevice.qml
+SoundMaster 1.0 SoundMaster.qml
+SoundInputDevice 1.0 SoundInputDevice.qml
+SoundDeviceInfo 1.0 SoundDeviceInfo.qml
+SoundBalance 1.0 SoundBalance.qml
+SoundTest 1.0 SoundTest.qml

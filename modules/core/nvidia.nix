@@ -1,6 +1,7 @@
-{ pkgs, config, ...}: 
+{ pkgs, config, ... }:
+
 let
-  nvidiaDriverChannel = config.boot.kernelPackages.nvidiaPackages.beta;
+  nvidiaDriverChannel = config.boot.kernelPackages.nvidiaPackages.stable;
 in {
   services.xserver.videoDrivers = ["nvidia"];
   boot.kernelParams = [
@@ -11,15 +12,10 @@ in {
   boot.blacklistedKernelModules = ["nouveau"];
   environment.variables = {
     LIBVA_DRIVER_NAME = "nvidia";
-    XDG_SESSION_TYPE = "wayland";
     GBM_BACKEND = "nvidia-drm";
     __GLX_VENDOR_LIBRARY_NAME = "nvidia";
-    NIXOS_OZONE_WL = "1";
-    __GL_GSYNC_ALLOWED = "1";
-    __GL_VRR_ALLOWED = "1";
     WLR_DRM_NO_ATOMIC = "1";
     NVD_BACKEND = "direct";
-    MOZ_ENABLE_WAYLAND = "1";
   };
   
   # Nvidia configuration

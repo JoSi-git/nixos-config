@@ -19,18 +19,20 @@ QtObject {
     readonly property int outlineThickness: _get("outlineThickness", 2)
     readonly property real bottomMargin: _get("bottomMargin", 60)
     readonly property bool animations: _get("animations", true)
+    readonly property string annotationTool: _get("annotationTool", "satty")
     readonly property color barBackground: _get("barBackground", Qt.rgba(0.15, 0.15, 0.15, 0.4))
     readonly property color barBorder: _get("barBorder", Qt.rgba(1, 1, 1, 0.15))
     readonly property color barText: _get("barText", "#AAFFFFFF")
-    readonly property color barShadow: _get("barShadow", "#80000000")
-    readonly property color toggleBackground: _get("toggleBackground", "white")
-    readonly property color toggleShadow: _get("toggleShadow", "#80000000")
+    readonly property color barShadow: _get("barShadow", Qt.rgba(0, 0, 0, 0.25))
+    readonly property color toggleBackground: _get("toggleBackground", accent)
+    readonly property color toggleShadow: _get("toggleShadow", Qt.rgba(0, 0, 0, 0.25))
     readonly property color toggleEdit: _get("toggleEdit", "#1ABC9C")
     readonly property color toggleTemp: _get("toggleTemp", "#2C66D8")
     readonly property color shareConnected: _get("shareConnected", "#3498DB")
     readonly property color sharePending: _get("sharePending", "#95A5A6")
     readonly property color shareErrorIcon: _get("shareErrorIcon", "white")
     readonly property color shareErrorBackground: _get("shareErrorBackground", "#E74C3C")
+    readonly property string postSaveHook: source.hooksPostSaveHook || ""
 
     function _get(key, fallback) {
         let val = source[key];

@@ -20,8 +20,8 @@
  * SOFTWARE.
  */
 
-import Qt5Compat.GraphicalEffects
 import QtQuick
+import QtQuick.Effects
 
 Rectangle {
     id: root
@@ -39,12 +39,15 @@ Rectangle {
     property color shadowColor: "#80000000"
     readonly property real buttonSize: 44
     readonly property real inactiveScale: 0.4
-    readonly property real activeIconSize: 18
-    readonly property real inactiveIconSize: 15
+    readonly property real activeIconSize: 30
+    readonly property real inactiveIconSize: 20
     readonly property real pulseMinOpacity: 0.3
     readonly property int springAnimDuration: 350
     readonly property int fadeAnimDuration: 250
     readonly property int pulseStepDuration: 600
+    property url imageSource: ""
+    property color borderColor: "transparent"
+    property int borderWidth: 0
 
     signal clicked()
 
@@ -58,6 +61,9 @@ Rectangle {
     height: buttonSize
     radius: buttonSize / 2
     color: backgroundColor
+    border.color: borderColor
+    border.width: borderWidth
+    antialiasing: true
     x: active ? targetX : sourceX
     y: targetY - height / 2
     scale: active ? (hovered ? 1.1 : 1) : inactiveScale
@@ -118,29 +124,30 @@ Rectangle {
         onExited: root.hovered = false
     }
 
-    layer.effect: DropShadow {
-        transparentBorder: true
-        radius: 12
-        samples: 25
-        color: root.pulse ? Qt.rgba(root.iconColor.r, root.iconColor.g, root.iconColor.b, 0.25) : root.shadowColor
-        verticalOffset: 4
+    layer.effect: MultiEffect {
+        shadowEnabled: true
+        shadowColor: root.pulse ? Qt.rgba(root.iconColor.r, root.iconColor.g, root.iconColor.b, 0.25) : root.shadowColor
+        shadowVerticalOffset: 4
+        shadowBlur: 0.8
+        paddingRect: Qt.rect(0, 0, 0, 8)
     }
 
     Behavior on x {
-        // Configuration for spring-based transitions
         SpringAnimation {
-            spring: 4
-            damping: 0.4
-            mass: 0.8
+            spring: 5
+            damping: 0.7
+            mass: 1.0
+            epsilon: 0.1
         }
 
     }
 
     Behavior on y {
         SpringAnimation {
-            spring: 4
-            damping: 0.4
-            mass: 0.8
+            spring: 5
+            damping: 0.7
+            mass: 1.0
+            epsilon: 0.1
         }
 
     }

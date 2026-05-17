@@ -1,4 +1,4 @@
-{ hostname, config, pkgs, host, ...}:
+{ hostname, config, pkgs, host, ... }:
 {
   programs.zsh = {
     shellAliases = {

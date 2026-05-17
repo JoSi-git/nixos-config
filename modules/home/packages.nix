@@ -5,6 +5,7 @@
 
     ## CLI Utilities
     bat                   # cat clone with syntax highlighting and Git integration
+    claude-code           # anthropics cli coding agent
     duff                  # find duplicate files quickly
     eza                   # ls clone with advanced features
     fd                    # simple, fast and user-friendly alternative to find
@@ -61,7 +62,6 @@
     ttyper                # typing speed test in the terminal
     
     # Lazy Tools
-    lazygit
     lazydocker
     
     ## GUI Applications
@@ -83,7 +83,7 @@
     thunderbird           # e-mail client
     vscodium              # IDE
     vlc                   # media player
-    discord               # temporary workaround while nixcord is broken
+    discord               # discord client
     teamspeak6-client     # discord alternatives
     zenity                # gtk based message windows
   ];

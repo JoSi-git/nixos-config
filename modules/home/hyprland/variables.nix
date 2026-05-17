@@ -2,8 +2,8 @@
 {
   home.sessionVariables = {
     NIXOS_OZONE_WL = 1;
-    __GL_GSYNC_ALLOWED = 0;
-    __GL_VRR_ALLOWED = 0;
+    __GL_GSYNC_ALLOWED = 1; # temporary testing
+    __GL_VRR_ALLOWED = 1; # temporary testing
     _JAVA_AWT_WM_NONEREPARENTING = 1;
     SSH_AUTH_SOCK = "${config.home.homeDirectory}/.1password/agent.sock";
     DISABLE_QT5_COMPAT = 0;

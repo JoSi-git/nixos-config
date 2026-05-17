@@ -30,24 +30,24 @@
 
   gtk = {
     enable = true;
+    gtk3.extraConfig.gtk-menu-images = true;
     gtk4.theme = config.gtk.theme;
     
     iconTheme = {
       name = "Papirus-Dark";
       package = pkgs.papirus-icon-theme;
     };
-    cursorTheme = {
-      name = "Nordzy-cursors";
-      package = pkgs.nordzy-cursor-theme;
-      size = 22;
-    };
+    # cursorTheme = {           # redundant, home.pointerCursor handles this
+    #   name = "Nordzy-cursors";
+    #   package = pkgs.nordzy-cursor-theme;
+    #   size = 22;
+    # };
   };
 
-  home.sessionVariables = {
-    HYPRCURSOR_THEME = lib.mkForce "Nordzy-hyprcursors";
-    HYPRCURSOR_SIZE = lib.mkForce 22;
-    
-    XCURSOR_THEME = "Nordzy-cursors";
-    XCURSOR_SIZE = 22;
-  };
+  # home.sessionVariables = {  # redundant, home.pointerCursor handles this
+  #   HYPRCURSOR_THEME = lib.mkForce "Nordzy-hyprcursors";
+  #   HYPRCURSOR_SIZE = lib.mkForce 22;
+  #   XCURSOR_THEME = "Nordzy-cursors";
+  #   XCURSOR_SIZE = 22;
+  # };
 }

@@ -17,6 +17,10 @@
           "!fallback-x11"
         ];
       };
+      "io.github.nozwock.Packet" = {
+        # Allow access to home directory so files from any location can be sent
+        Context.filesystems = [ "home" ];
+      };
     };
   };
 }

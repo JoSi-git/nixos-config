@@ -1,11 +1,14 @@
-{lib, pkgs, config, ... }: {
+{ lib, pkgs, config, ... }:
+{
   config = {
     stylix = {
       enable = true;
+      overlays.enable = false;
       polarity = "dark";
       targets.spicetify.enable = false;
       
       targets.firefox.enable = true;
+      targets.firefox.colorTheme.enable = true;
       targets.firefox.profileNames = [ "josi" ];
       
       # See https://tinted-theming.github.io/tinted-gallery/ for more schemes

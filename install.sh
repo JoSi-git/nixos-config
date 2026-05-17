@@ -61,6 +61,10 @@ get_username() {
 set_username() {
     sed -i -e "s/${CURRENT_USERNAME}/${username}/g" ./flake.nix
     sed -i "s|/home/${CURRENT_USERNAME}/|/home/${username}/|g" ./modules/home/rofi/config.rasi
+    sed -i "s|/home/${CURRENT_USERNAME}/|/home/${username}/|g" ./modules/core/hardware.nix
+    sed -i "s/\"${CURRENT_USERNAME}\"/\"${username}\"/g" ./modules/home/stylix.nix
+    sed -i "s/\"${CURRENT_USERNAME}\"/\"${username}\"/g" ./modules/core/program.nix
+    sed -i "s/${CURRENT_USERNAME} = {/${username} = {/" ./modules/home/browser.nix
 }
 
 get_host() {

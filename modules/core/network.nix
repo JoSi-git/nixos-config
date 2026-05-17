@@ -1,4 +1,4 @@
-{ pkgs, host, ... }:
+{ host, ... }:
 {
   networking = {
     hostName = "${host}";
@@ -27,5 +27,4 @@
   };
   
   services.blueman.enable = true;
-  security.rtkit.enable = true;
 }

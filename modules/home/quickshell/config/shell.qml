@@ -3,10 +3,11 @@ import QtQuick
 import Quickshell
 import Quickshell.Services.Notifications
 import "Bar/services"
+import "Bar/eastereggs"
 
 ShellRoot {
     id: rootqs
-
+    
     property ListModel notifications: ListModel {}
 
     NotificationServer {
@@ -36,4 +37,5 @@ ShellRoot {
     }
 
     NotifPopup { id: notifPopup }
+    ActivateLinux {}
 }

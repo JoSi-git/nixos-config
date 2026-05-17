@@ -27,12 +27,14 @@ PanelWindow {
     id: root
 
     property var targetScreen: Quickshell.screens[0]
+    property bool isReady: screencopy.hasContent
     property alias contentItem: root.contentItem
 
     screen: targetScreen
     exclusionMode: ExclusionMode.Ignore
     WlrLayershell.layer: WlrLayer.Overlay
     WlrLayershell.keyboardFocus: WlrKeyboardFocus.OnDemand
+    color: "transparent"
 
     anchors {
         left: true
@@ -42,6 +44,7 @@ PanelWindow {
     }
 
     ScreencopyView {
+        id: screencopy
         captureSource: root.targetScreen
         anchors.fill: parent
         z: -1

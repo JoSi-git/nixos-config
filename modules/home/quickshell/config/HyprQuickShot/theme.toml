@@ -26,13 +26,13 @@ border = "rgba(255, 255, 255, 0.15)"
 # Inactive tab text color
 text = "white"
 # Drop shadow under the bar
-shadow = "#80000000"
+shadow = "rgba(0, 0, 0, 0.25)"
 
 [toggle]
 # Pill background for edit/temp/share buttons
 background = "white"
 # Drop shadow under toggle pills
-shadow = "#80000000"
+shadow = "rgba(0, 0, 0, 0.25)"
 # Edit toggle icon color
 edit = "#1ABC9C"
 # Temp toggle icon color

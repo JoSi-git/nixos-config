@@ -1,5 +1,7 @@
 *.env
+*/.tmp
 */.old
 
 # Assets downloaded locally via install.sh
 frog-snail.gif
+/modules/home/quickshell/config/Bar/popouts/Sound/.tmp

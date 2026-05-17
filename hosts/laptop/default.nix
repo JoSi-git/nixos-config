@@ -13,13 +13,6 @@
     python3
   ];
   
-  programs._1password.enable = true;
-
-  programs._1password-gui = {
-    enable = true;
-    polkitPolicyOwners = [ "josi" ];
-  };
-  
   services = {
     power-profiles-daemon.enable = true;
 
@@ -50,8 +43,6 @@
       INTEL_GPU_MIN_FREQ_ON_BAT = 500;
     };
   };
-
-  powerManagement.cpuFreqGovernor = "performance";
 
   boot = {
     kernelModules = [ "acpi_call" ];
