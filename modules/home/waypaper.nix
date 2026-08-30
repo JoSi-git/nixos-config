@@ -7,7 +7,7 @@
     language = en
     folder = ~/Pictures/wallpapers/others
     monitors = All
-    wallpaper = ~/Pictures/wallpapers/others/nixos.png
+    wallpaper = ~/Pictures/wallpapers/others/klugheim_im_dunklen.jpg
     backend = awww
     fill = fill
     sort = name

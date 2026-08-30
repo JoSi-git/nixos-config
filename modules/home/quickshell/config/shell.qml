@@ -7,7 +7,6 @@ import "Bar/eastereggs"
 
 ShellRoot {
     id: rootqs
-    
     property ListModel notifications: ListModel {}
 
     NotificationServer {

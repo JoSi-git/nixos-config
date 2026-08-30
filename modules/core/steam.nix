@@ -1,5 +1,14 @@
 { pkgs, ... }:
 {
+  # vulkan-validation-layers tries to git clone deps at build time which breaks in the Nix sandbox
+  nixpkgs.overlays = [
+    (final: prev: {
+      vulkan-validation-layers = prev.vulkan-validation-layers.overrideAttrs (old: {
+        cmakeFlags = [ "-DUPDATE_DEPS=OFF" ] ++ (old.cmakeFlags or []);
+      });
+    })
+  ];
+
   programs = {
     steam = {
       enable = true;

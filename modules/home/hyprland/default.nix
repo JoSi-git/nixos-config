@@ -9,6 +9,7 @@
     ./keybinds.nix
     ./windowrules.nix
     ./hyprlock.nix
+    ./hypridle.nix
     ./variables.nix
     ./share-picker.nix
   ];

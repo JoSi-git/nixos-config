@@ -13,6 +13,7 @@
 
         # keybindings
         "$mainMod, B, exec, firefox"
+        "$mainMod SHIFT, R, exec, hyprctl reload && sleep 0.5 && waypaper --restore"
         "$mainMod, Q, killactive,"
         "$mainMod, F, fullscreen, 0"
         "$mainMod SHIFT, F, fullscreen, 1"

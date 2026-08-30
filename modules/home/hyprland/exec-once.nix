@@ -8,6 +8,7 @@
       "systemctl --user import-environment --all"
 
       "awww-daemon &"
+      "hypridle &"
       "hyprlock"
       "battery_check &"
       "wl-clip-persist --clipboard both &"

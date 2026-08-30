@@ -91,6 +91,7 @@
           "browser.newtabpage.activity-stream.showSponsored" = lock-false;
           "browser.newtabpage.activity-stream.system.showSponsored" = lock-false;
           "browser.newtabpage.activity-stream.showSponsoredTopSites" = lock-false;
+          "dom.webserial.enabled" = lock-true; # allow Web Serial (e.g. Home Assistant/ESPHome device flashing)
         };
       };
     };
@@ -100,5 +101,6 @@
   home.packages = with pkgs; [
     vivaldi
     vivaldi-ffmpeg-codecs
+    chromium
   ];
  }

@@ -6,7 +6,6 @@
     alsa.enable = true;
     alsa.support32Bit = true;
     pulse.enable = true;
-
     extraConfig.pipewire."92-low-latency" = {
       context.properties = {
         default.clock.rate = 48000;
@@ -16,10 +15,10 @@
       };
     };
   };
-
   hardware.alsa.enablePersistence = true;
+  services.udev.packages = [ pkgs.headsetcontrol ];
   environment.systemPackages = with pkgs; [ 
-        pavucontrol
-        headsetcontrol
+    pavucontrol
+    headsetcontrol
   ];
 }

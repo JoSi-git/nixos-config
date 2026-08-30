@@ -44,8 +44,13 @@ outputs = { nixpkgs, ... }@inputs:
         nixpkgs.config = {
           allowUnfree = true;
           nvidia.acceptLicense = true;
+          permittedInsecurePackages = [
+            "electron-40.10.5" # required by winboat
+          ];
         };
-        nixpkgs.overlays = [ inputs.nur.overlays.default ];
+        nixpkgs.overlays = [
+          inputs.nur.overlays.default
+        ];
       };
       
       sharedModules = [

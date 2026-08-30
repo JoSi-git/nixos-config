@@ -14,15 +14,15 @@ Item {
     readonly property var sourceList: {
         var result = []
         for (var node of (Pipewire.nodes.values ?? [])) {
-            if (!node.isSink && !node.isStream && node.audio !== null)
+            if (!node.isSink && !node.isStream &&
+                (node.name.startsWith("alsa_input.") || node.name.startsWith("bluez_input.")))
                 result.push(node)
         }
         return result
     }
 
     readonly property var sel: sourceList.length > 0 ? sourceList[selectedIndex] : null
-    readonly property bool isActive: sel !== null && defaultSource !== null &&
-                                     sel.id === defaultSource.id
+    property bool isActive: false
 
     readonly property string micIcon: {
         if (!sel) return ""
@@ -31,12 +31,16 @@ Item {
         return ""
     }
 
-    PwObjectTracker { objects: root.sel ? [root.sel] : [] }
+    PwObjectTracker { id: nodeTracker; objects: [] }
 
+    onSelChanged: {
+        nodeTracker.objects = root.sel ? [root.sel] : []
+        isActive = sel !== null && defaultSource !== null && sel.id === defaultSource.id
+    }
     onDefaultSourceChanged: {
-        var defId = defaultSource ? defaultSource.id : 0
-        var idx = sourceList.findIndex(function(s) { return s.id === defId })
+        var idx = sourceList.findIndex(function(s) { return s.id === (defaultSource ? defaultSource.id : 0) })
         if (idx >= 0) selectedIndex = idx
+        isActive = sel !== null && defaultSource !== null && sel.id === defaultSource.id
     }
 
     function cycleSource(dir) {
@@ -94,6 +98,65 @@ Item {
             spacing: 10
 
             ColumnLayout {
+                Layout.fillHeight: true
+                spacing: 4
+                opacity: root.isActive ? 1.0 : 0.35
+                Behavior on opacity { NumberAnimation { duration: 150 } }
+
+                Text {
+                    Layout.alignment: Qt.AlignHCenter
+                    Layout.preferredWidth: 38
+                    horizontalAlignment: Text.AlignHCenter
+                    text: sel ? Math.round(sel.audio.volume * 100) + "%" : "—"
+                    color: Style.colWhite
+                    opacity: 0.85
+                    font { pixelSize: 11; weight: Font.Medium; family: "Courier New" }
+                }
+
+                Item {
+                    Layout.alignment: Qt.AlignHCenter
+                    width: 22
+                    Layout.fillHeight: true
+
+                    Rectangle {
+                        anchors.fill: parent
+                        radius: 6
+                        color: Style.colBg03
+                        border.color: Style.colHighlight
+                        border.width: 1
+                    }
+                    Rectangle {
+                        anchors { bottom: parent.bottom; left: parent.left; right: parent.right }
+                        height: sel ? Math.max(0, Math.min(1, sel.audio.volume)) * parent.height : 0
+                        radius: 6
+                        color: Style.colYellow
+                        opacity: 0.85
+                        Behavior on height { NumberAnimation { duration: 80 } }
+                    }
+                    MouseArea {
+                        anchors.fill: parent
+                        preventStealing: true
+                        onPositionChanged: function(mouse) {
+                            if (!pressed || !sel) return
+                            sel.audio.volume = Math.max(0, Math.min(1, 1.0 - mouse.y / height))
+                        }
+                        onWheel: function(wheel) {
+                            if (!sel) return
+                            sel.audio.volume = Math.max(0, Math.min(1, sel.audio.volume + (wheel.angleDelta.y > 0 ? 0.05 : -0.05)))
+                        }
+                    }
+                }
+
+                Text {
+                    Layout.alignment: Qt.AlignHCenter
+                    text: "GAIN"
+                    color: Style.colBorder
+                    opacity: 0.55
+                    font { pixelSize: 8; letterSpacing: 1.3; weight: Font.Light }
+                }
+            }
+
+            ColumnLayout {
                 Layout.fillWidth: true
                 Layout.fillHeight: true
                 spacing: 6
@@ -115,7 +178,7 @@ Item {
                     Text {
                         anchors.centerIn: parent
                         text: root.micIcon
-                        font { family: "Hack Nerd Font"; pixelSize: 22 }
+                        font { family: "Symbols Nerd Font Mono"; pixelSize: 22 }
                         color: root.isActive ? Style.colYellow : Style.colBorder
                         Behavior on color { ColorAnimation { duration: 150 } }
                     }
@@ -154,7 +217,7 @@ Item {
                     border.width: 1
 
                     HoverHandler { id: activateHover }
-                    TapHandler   {
+                    TapHandler {
                         enabled: !root.isActive
                         onTapped: Pipewire.preferredDefaultAudioSource = root.sel
                     }
@@ -180,66 +243,9 @@ Item {
                 Item { Layout.fillHeight: true }
             }
 
-            ColumnLayout {
+            Item {
+                Layout.preferredWidth: 38
                 Layout.fillHeight: true
-                spacing: 4
-                opacity: root.isActive ? 1.0 : 0.35
-                Behavior on opacity { NumberAnimation { duration: 150 } }
-
-                Text {
-                    Layout.alignment: Qt.AlignHCenter
-                    Layout.preferredWidth: 38
-                    horizontalAlignment: Text.AlignHCenter
-                    text: sel ? Math.round(sel.audio.volume * 100) + "%" : "—"
-                    color: Style.colWhite
-                    opacity: 0.85
-                    font { pixelSize: 11; weight: Font.Medium; family: "Courier New" }
-                }
-
-                Item {
-                    Layout.alignment: Qt.AlignHCenter
-                    width: 22
-                    Layout.fillHeight: true
-
-                    Rectangle {
-                        anchors.fill: parent
-                        radius: 6
-                        color: Style.colBg03
-                        border.color: Style.colHighlight
-                        border.width: 1
-                    }
-
-                    Rectangle {
-                        anchors { bottom: parent.bottom; left: parent.left; right: parent.right }
-                        height: sel ? Math.max(0, Math.min(1, sel.audio.volume)) * parent.height : 0
-                        radius: 6
-                        color: Style.colYellow
-                        opacity: 0.85
-                        Behavior on height { NumberAnimation { duration: 80 } }
-                    }
-
-                    MouseArea {
-                        anchors.fill: parent
-                        preventStealing: true
-                        onPositionChanged: function(mouse) {
-                            if (!pressed || !sel) return
-                            sel.audio.volume = Math.max(0, Math.min(1, 1.0 - mouse.y / height))
-                        }
-                        onWheel: function(wheel) {
-                            if (!sel) return
-                            var delta = wheel.angleDelta.y > 0 ? 0.05 : -0.05
-                            sel.audio.volume = Math.max(0, Math.min(1, sel.audio.volume + delta))
-                        }
-                    }
-                }
-
-                Text {
-                    Layout.alignment: Qt.AlignHCenter
-                    text: "GAIN"
-                    color: Style.colBorder
-                    opacity: 0.55
-                    font { pixelSize: 8; letterSpacing: 1.3; weight: Font.Light }
-                }
             }
         }
     }

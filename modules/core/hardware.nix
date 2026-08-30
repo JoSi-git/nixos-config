@@ -2,6 +2,8 @@
 {
   hardware.enableAllFirmware = true;
 
+  services.hardware.bolt.enable = true;
+
   fileSystems."/home/josi/Games" = {
     device = "UUID=61cd1dd8-88ab-41d6-ab13-eee34cde0923";
     fsType = "ext4";

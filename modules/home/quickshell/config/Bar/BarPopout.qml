@@ -43,17 +43,14 @@ Rectangle {
             color: Style.colBorder
             opacity: 0.5
         }
-        Loader {
-            id: contentLoader
+        Item {
             width: parent.width
             height: parent.height - header.height - 31
-            source: "./popouts/Category" + popout.activeCategory + ".qml"
-            
-            onStatusChanged: {
-                if (status === Loader.Error) {
-                    console.warn("Could not load category: " + source)
-                }
-            }
+
+            CategoryDashboard   { anchors.fill: parent; visible: popout.activeCategory === "Dashboard" }
+            CategorySound       { anchors.fill: parent; visible: popout.activeCategory === "Sound" }
+            CategoryNetwork     { anchors.fill: parent; visible: popout.activeCategory === "Network" }
+            CategoryPerformance { anchors.fill: parent; visible: popout.activeCategory === "Performance" }
         }
     }
 }

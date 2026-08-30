@@ -14,15 +14,14 @@ Item {
     readonly property var sinkList: {
         var result = []
         for (var node of (Pipewire.nodes.values ?? [])) {
-            if (node.isSink && !node.isStream && node.audio !== null)
+            if (node.isSink && !node.isStream && node.audio !== null && !node.name.includes("pro-output"))
                 result.push(node)
         }
         return result
     }
 
     readonly property var sel: sinkList.length > 0 ? sinkList[selectedIndex] : null
-    readonly property bool isActive: sel !== null && defaultSink !== null &&
-                                     sel.id === defaultSink.id
+    property bool isActive: false
 
     readonly property string speakerIcon: {
         if (!sel) return ""
@@ -33,12 +32,16 @@ Item {
         return ""
     }
 
-    PwObjectTracker { objects: root.sel ? [root.sel] : [] }
+    PwObjectTracker { id: nodeTracker; objects: [] }
 
+    onSelChanged: {
+        nodeTracker.objects = root.sel ? [root.sel] : []
+        isActive = sel !== null && defaultSink !== null && sel.id === defaultSink.id
+    }
     onDefaultSinkChanged: {
-        var defId = defaultSink ? defaultSink.id : 0
-        var idx = sinkList.findIndex(function(s) { return s.id === defId })
+        var idx = sinkList.findIndex(function(s) { return s.id === (defaultSink ? defaultSink.id : 0) })
         if (idx >= 0) selectedIndex = idx
+        isActive = sel !== null && defaultSink !== null && sel.id === defaultSink.id
     }
 
     function cycleSink(dir) {
@@ -95,6 +98,11 @@ Item {
             Layout.fillHeight: true
             spacing: 10
 
+            Item {
+                Layout.preferredWidth: 38
+                Layout.fillHeight: true
+            }
+
             ColumnLayout {
                 Layout.fillWidth: true
                 Layout.fillHeight: true
@@ -117,7 +125,7 @@ Item {
                     Text {
                         anchors.centerIn: parent
                         text: root.speakerIcon
-                        font { family: "Hack Nerd Font"; pixelSize: 22 }
+                        font { family: "Symbols Nerd Font Mono"; pixelSize: 22 }
                         color: root.isActive ? Style.colYellow : Style.colBorder
                         Behavior on color { ColorAnimation { duration: 150 } }
                     }
@@ -156,7 +164,7 @@ Item {
                     border.width: 1
 
                     HoverHandler { id: activateHover }
-                    TapHandler   {
+                    TapHandler {
                         enabled: !root.isActive
                         onTapped: Pipewire.preferredDefaultAudioSink = root.sel
                     }
@@ -210,7 +218,6 @@ Item {
                         border.color: Style.colHighlight
                         border.width: 1
                     }
-
                     Rectangle {
                         anchors { bottom: parent.bottom; left: parent.left; right: parent.right }
                         height: sel ? Math.max(0, Math.min(1, sel.audio.volume)) * parent.height : 0
@@ -219,7 +226,6 @@ Item {
                         opacity: 0.85
                         Behavior on height { NumberAnimation { duration: 80 } }
                     }
-
                     MouseArea {
                         anchors.fill: parent
                         preventStealing: true
@@ -229,8 +235,7 @@ Item {
                         }
                         onWheel: function(wheel) {
                             if (!sel) return
-                            var delta = wheel.angleDelta.y > 0 ? 0.05 : -0.05
-                            sel.audio.volume = Math.max(0, Math.min(1, sel.audio.volume + delta))
+                            sel.audio.volume = Math.max(0, Math.min(1, sel.audio.volume + (wheel.angleDelta.y > 0 ? 0.05 : -0.05)))
                         }
                     }
                 }

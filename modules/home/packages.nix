@@ -49,6 +49,7 @@
 
     ## Fun Tools & Terminal Games
 #    cbonsai               # grow a bonsai tree in your terminal
+    cava                  # audio visualizer
     cmatrix               # Matrix-style terminal screensaver
     cowsay                # configurable talking cow (and other creatures)
     fortune               # display a random epigram

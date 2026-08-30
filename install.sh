@@ -97,10 +97,15 @@ download_assets() {
         "https://media.tenor.com/V4A7awXmANMAAAAj/frog-snail.gif|frog-snail.gif"
     )
 
+    # Format: "URL|filename"  (audio extracted from video via ffmpeg)
+    local -a AUDIO_ASSETS=(
+        "https://videos.phantasialand.de/videos/661538d8b1cc2409c558e52b/klugheim_02/klugheim_02-1080p.mp4|klugheim_01.mp3"
+    )
+
     local ASSETS_DIR="./modules/home/quickshell/config/Bar/assets"
 
     echo -e "\n${YELLOW}DOWNLOADING ASSETS${NORMAL}\n"
-    
+
     echo -e "${CYAN}┌─────────────────────────────────────────────────────────────┐${NORMAL}"
     echo -e "${CYAN}│${NORMAL}                     IMPORTANT NOTICE                        ${CYAN}│${NORMAL}"
     echo -e "${CYAN}├─────────────────────────────────────────────────────────────┤${NORMAL}"
@@ -111,6 +116,10 @@ download_assets() {
     echo -e "${CYAN}│${NORMAL}  to avoid distributing potentially copyrighted material.    ${CYAN}│${NORMAL}"
     echo -e "${CYAN}│${NORMAL}                                                             ${CYAN}│${NORMAL}"
     echo -e "${CYAN}│${NORMAL}  Downloads are intended for private use only.               ${CYAN}│${NORMAL}"
+    echo -e "${CYAN}│${NORMAL}                                                             ${CYAN}│${NORMAL}"
+    echo -e "${CYAN}│${NORMAL}  Note: ffmpeg will be temporarily loaded via nix shell      ${CYAN}│${NORMAL}"
+    echo -e "${CYAN}│${NORMAL}  to extract audio tracks from video sources.                ${CYAN}│${NORMAL}"
+    echo -e "${CYAN}│${NORMAL}                                                             ${CYAN}│${NORMAL}"
     echo -e "${CYAN}│${NORMAL}  By continuing, you confirm that:                           ${CYAN}│${NORMAL}"
     echo -e "${CYAN}│${NORMAL}   ✓ You will use these assets for personal use only         ${CYAN}│${NORMAL}"
     echo -e "${CYAN}│${NORMAL}   ✓ You understand the author takes no responsibility       ${CYAN}│${NORMAL}"
@@ -142,6 +151,25 @@ download_assets() {
             ((failed++))
         fi
     done
+
+    if [[ ${#AUDIO_ASSETS[@]} -gt 0 ]]; then
+        echo -e "\n${BLUE}Extracting audio assets via nix shell ffmpeg...${NORMAL}\n"
+        for entry in "${AUDIO_ASSETS[@]}"; do
+            local url="${entry%%|*}"
+            local filename="${entry##*|}"
+
+            echo -en "  Extracting audio ${MAGENTA}${filename}${NORMAL}... "
+            if nix shell nixpkgs#ffmpeg --command ffmpeg \
+                -i "${url}" -vn -acodec libmp3lame -q:a 0 \
+                "${ASSETS_DIR}/${filename}" -y -loglevel quiet 2>/dev/null; then
+                echo -e "${GREEN}✓${NORMAL}"
+                ((success++))
+            else
+                echo -e "${RED}✗ Failed${NORMAL}"
+                ((failed++))
+            fi
+        done
+    fi
 
     echo
     echo -e "  ${GREEN}✓ ${success} downloaded${NORMAL}, ${RED}✗ ${failed} failed${NORMAL}"
