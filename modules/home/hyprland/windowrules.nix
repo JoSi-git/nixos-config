@@ -77,7 +77,7 @@
       
       # pavucontrol
       "float on, match:class ^(org.pulseaudio.pavucontrol)$"
-      "center on, match:class ^(org.twosheds.iwgtk)$"
+      "center on, match:class ^(org.pulseaudio.pavucontrol)$"
       "size 800 500, match:class ^(org.pulseaudio.pavucontrol)$"
       
       # screenshot
@@ -103,8 +103,7 @@
       "center on, match:class ^(dialog)$"
 
       # Remove context menu transparency
-      "opaque on, match:class .*, match:title .*" 
-      "no_shadow on, match:class .*, match:title .*" 
+      "opaque on, match:class .*, match:title .*"
  #     "no_blur on, match:class .*, match:title .*"
       
       # No Gaps/Borders for specific full-window workspaces
